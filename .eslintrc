@@ -1,0 +1,23 @@
+{
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "camelcase": 1,
+    "no-unused-expressions": 1,
+    "no-shadow": 0,
+    "prefer-const": 0,
+    "prefer-destructuring": 0,
+    "no-console": "warn",
+    "no-underscore-dangle": 0
+  },
+  "globals": {
+    "window": true,
+    "document": true,
+    "localStorage": true,
+    "FormData": true,
+    "FileReader": true,
+    "Blob": true,
+    "navigator": true
+  },
+  "parser": "babel-eslint"
+}
