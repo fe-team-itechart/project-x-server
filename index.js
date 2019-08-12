@@ -1,7 +1,13 @@
 const express = require('express');
 
+require("dotenv").config();
+const sequelize = require('./database/index')
+
+
 const app = express();
 
-app.listen(8080, function() {
-  console.log('Listening on port 8080');
+const PORT = process.env.PORT || 8080
+
+app.listen(PORT, function() {
+  console.log(`Listening on port ${PORT}`);
 });
