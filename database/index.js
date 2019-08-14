@@ -1,8 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-const basename = path.basename(__filename);
+const models = require("./schemas");
 const Sequelize = require('sequelize');
-const dirName = (__dirname + '\\schemas');
 const { ErrorHandler } = require('../services');
 
 const db = {};
@@ -17,19 +14,14 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: true,
     },
-    logging: false,
+    logging: true,
   }
 );
 
-fs
-  .readdirSync(dirName)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = sequelize['import'](path.join(dirName, file));
-    db[model.name] = model;
-  })
+Object.keys(models).forEach(f => {
+  let model = models[f](sequelize, Sequelize);
+  db[model.name] = model;
+});
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
@@ -40,7 +32,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   db.Users.findOrCreate({
     where: {
       email: 'admin@admin.com',
@@ -48,19 +40,26 @@ db.sequelize.sync({ force: false }).then(() => {
     }
   })
     .then(user => ErrorHandler(user))
-    .catch(e => ErrorHandler(e, {show: true}));
+    .catch(e => ErrorHandler(e, { show: true }));
 
   db.Profiles.findOrCreate({
     where: {
-      info: {
-        "firstName": "Oleg",
-        "lastName": "Panasyuk"
-      },
       userId: 1
     }
   })
     .then(profile => ErrorHandler(profile))
-    .catch(e => ErrorHandler(e, {show: true}))
+    .catch(e => ErrorHandler(e, { show: true }));
+
+  db.PublicProfiles.findOrCreate({
+    where: {
+      id: 1,
+      firstName: 'Oleg',
+      lastName: 'Panasyuk',
+      ProfileId: 1
+    }
+  })
+    .then(profile => ErrorHandler(profile))
+    .catch(e => ErrorHandler(e, { show: true }));
 });
 
 module.exports = db;

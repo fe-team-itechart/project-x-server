@@ -1,8 +1,5 @@
 module.exports = (sequalize, type) => {
-    return sequalize.define( 'Profiles', {
-        info: {
-            type: type.JSON
-        },
+    const MODEL = sequalize.define( 'Profiles', {
         createdAt: {
             type: type.DATE
         },
@@ -14,4 +11,6 @@ module.exports = (sequalize, type) => {
         freezeTableName : true, 
         tableName : 'profiles'
     });
+
+    return MODEL;
 };
