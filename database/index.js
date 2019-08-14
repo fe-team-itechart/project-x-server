@@ -32,7 +32,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync({ force: false }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   db.Users.findOrCreate({
     where: {
       email: 'admin@admin.com',
@@ -42,24 +42,52 @@ db.sequelize.sync({ force: false }).then(() => {
     .then(user => ErrorHandler(user))
     .catch(e => ErrorHandler(e, { show: true }));
 
-  db.Profiles.findOrCreate({
-    where: {
-      userId: 1,
-    },
-  })
-    .then(profile => ErrorHandler(profile))
-    .catch(e => ErrorHandler(e, { show: true }));
-
   db.PublicProfiles.findOrCreate({
     where: {
       id: 1,
       firstName: 'Oleg',
       lastName: 'Panasyuk',
-      ProfileId: 1,
     },
   })
     .then(profile => ErrorHandler(profile))
     .catch(e => ErrorHandler(e, { show: true }));
+
+  db.AccountProfiles.findOrCreate({
+    where: {
+      id: 1,
+      info: {
+        "field": "value",
+      },
+    },
+  })
+    .then(profile => ErrorHandler(profile))
+    .catch(e => ErrorHandler(e, { show: true }));
+
+  db.SettingsProfiles.findOrCreate({
+    where: {
+      id: 1,
+      localization: 'ru',
+      secureSetts: {
+        "field": "value",
+      },
+    },
+  })
+    .then(profile => {
+      ErrorHandler(profile);
+      db.Profiles.findOrCreate({
+        where: {
+          userId: 1,
+          PublicProfileId: 1,
+          AccountProfileId: 1,
+          SettingsProfileId: 1,
+        },
+      })
+        .then(profile => ErrorHandler(profile))
+        .catch(e => ErrorHandler(e, { show: true }));
+    })
+    .catch(e => ErrorHandler(e, { show: true }));
+
+ 
 });
 
 module.exports = db;

@@ -26,7 +26,7 @@ module.exports = (sequalize, type) => {
   );
 
   MODEL.associate = function(models) {
-    MODEL.belongsTo(models.Profiles);
+    MODEL.hasOne(models.Profiles);
   };
 
   return MODEL;
