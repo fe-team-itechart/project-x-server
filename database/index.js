@@ -1,4 +1,4 @@
-const models = require("./schemas");
+const models = require('./schemas');
 const Sequelize = require('sequelize');
 const { ErrorHandler } = require('../services');
 
@@ -37,15 +37,15 @@ db.sequelize.sync({ force: false }).then(() => {
     where: {
       email: 'admin@admin.com',
       password: 'user',
-    }
+    },
   })
     .then(user => ErrorHandler(user))
     .catch(e => ErrorHandler(e, { show: true }));
 
   db.Profiles.findOrCreate({
     where: {
-      userId: 1
-    }
+      userId: 1,
+    },
   })
     .then(profile => ErrorHandler(profile))
     .catch(e => ErrorHandler(e, { show: true }));
@@ -55,8 +55,8 @@ db.sequelize.sync({ force: false }).then(() => {
       id: 1,
       firstName: 'Oleg',
       lastName: 'Panasyuk',
-      ProfileId: 1
-    }
+      ProfileId: 1,
+    },
   })
     .then(profile => ErrorHandler(profile))
     .catch(e => ErrorHandler(e, { show: true }));

@@ -6,12 +6,12 @@ const SettingsProfiles = require('./settsProfiles.model');
 const CoursesProfiles = require('./coursesProfiles.model');
 const Courses = require('./courses.model');
 
-module.exports = { 
-    Profiles,
-    Users,
-    PublicProfiles,
-    AccountProfile,
-    SettingsProfiles,
-    CoursesProfiles,
-    Courses
+module.exports = {
+  Profiles,
+  Users,
+  PublicProfiles,
+  AccountProfile,
+  SettingsProfiles,
+  CoursesProfiles,
+  Courses,
 };
