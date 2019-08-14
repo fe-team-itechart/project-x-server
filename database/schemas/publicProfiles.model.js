@@ -1,5 +1,5 @@
 module.exports = (sequalize, type) => {
-    const MODEL = sequalize.define( 'PublicProfiles', {
+    const MODEL = sequalize.define('PublicProfiles', {
         id: {
             primaryKey: true,
             type: type.INTEGER,
@@ -20,12 +20,12 @@ module.exports = (sequalize, type) => {
             type: type.DATE
         }
     }, {
-        timestamps : true,
-        freezeTableName : true, 
-        tableName : 'public_profiles'
-    });
+            timestamps: true,
+            freezeTableName: true,
+            tableName: 'public_profiles'
+        });
 
-    MODEL.associate = function(models) {
+    MODEL.associate = function (models) {
         MODEL.belongsTo(models.Profiles);
     };
 

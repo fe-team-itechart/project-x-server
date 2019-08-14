@@ -1,5 +1,5 @@
 module.exports = (sequalize, type) => {
-    const MODEL = sequalize.define( 'Courses', {
+    const MODEL = sequalize.define('Courses', {
         id: {
             primaryKey: true,
             type: type.INTEGER,
@@ -23,10 +23,10 @@ module.exports = (sequalize, type) => {
             type: type.DATE
         }
     }, {
-        timestamps : true,
-        freezeTableName : true, 
-        tableName : 'courses'
-    });
+            timestamps: true,
+            freezeTableName: true,
+            tableName: 'courses'
+        });
 
     return MODEL;
 };

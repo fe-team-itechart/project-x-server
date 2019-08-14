@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: true,
     },
-    logging: true,
+    logging: false,
   }
 );
 
@@ -32,7 +32,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   db.Users.findOrCreate({
     where: {
       email: 'admin@admin.com',
