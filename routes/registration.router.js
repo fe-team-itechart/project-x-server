@@ -45,69 +45,70 @@ async function regInDataBaseUser({
       }
     });
     let PublicProfileId = null;
-    await db.PublicProfiles.findOrCreate({
-      where: {
-        id: userId,
-      },
-      defaults: {
-        firstName,
-        lastName,
-      },
-    })
-      .then(([profile, created]) => {
-        PublicProfileId = profile.id;
-        ErrorHandler(profile);
-      })
-      .catch(e => ErrorHandler(e, { show: false }));
-
-    let AccountProfileId = null;
-    await db.AccountProfiles.findOrCreate({
-      where: {
-        id: userId,
-      },
-      defaults: {
-        info: {},
-      },
-    })
-      .then(([profile, created]) => {
-        AccountProfileId = created ? profile.id : null;
-        ErrorHandler(profile);
-      })
-      .catch(e => ErrorHandler(e, { show: true }));
-
-    let SettingsProfileId = null;
-    await db.SettingsProfiles.findOrCreate({
-      where: {
-        id: userId,
-      },
-      defaults: {
-        localization: 'ru',
-        secureSetts: {},
-      },
-    })
-      .then(([profile, created]) => {
-        SettingsProfileId = created ? profile.id : null;
-        ErrorHandler(profile);
-      })
-      .catch(e => ErrorHandler(e, { show: true }));
-    if (userId && PublicProfileId && AccountProfileId && SettingsProfileId) {
-      await db.Profiles.findOrCreate({
+    if (userId) {
+      await db.PublicProfiles.findOrCreate({
         where: {
-          userId,
-          PublicProfileId,
-          AccountProfileId,
-          SettingsProfileId,
+          id: userId,
+        },
+        defaults: {
+          firstName,
+          lastName,
         },
       })
         .then(([profile, created]) => {
-          resolve(profile);
+          PublicProfileId = profile.id;
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: false }));
+
+      let AccountProfileId = null;
+      await db.AccountProfiles.findOrCreate({
+        where: {
+          id: userId,
+        },
+        defaults: {
+          info: {},
+        },
+      })
+        .then(([profile, created]) => {
+          AccountProfileId = created ? profile.id : null;
           ErrorHandler(profile);
         })
         .catch(e => ErrorHandler(e, { show: true }));
-    } else {
-      resolve({});
+
+      let SettingsProfileId = null;
+      await db.SettingsProfiles.findOrCreate({
+        where: {
+          id: userId,
+        },
+        defaults: {
+          localization: 'ru',
+          secureSetts: {},
+        },
+      })
+        .then(([profile, created]) => {
+          SettingsProfileId = created ? profile.id : null;
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: true }));
+      if (userId && PublicProfileId && AccountProfileId && SettingsProfileId) {
+        await db.Profiles.findOrCreate({
+          where: {
+            userId,
+            PublicProfileId,
+            AccountProfileId,
+            SettingsProfileId,
+          },
+        })
+          .then(([profile, created]) => {
+            resolve(profile);
+            ErrorHandler(profile);
+          })
+          .catch(e => ErrorHandler(e, { show: true }));
+      } else {
+        resolve({});
+      }
     }
-    
   });
 }
 
@@ -145,10 +146,14 @@ router.post('/', (req, res, next) => {
       if (!err) {
         await regInDataBaseUser(result)
           .then(a => {
-            const {password, passwordConfirm, ...results} = result;
-            const answ = {status: '201', message: 'User is created', user: {
-              ...results
-            }}
+            const { password, passwordConfirm, ...results } = result;
+            const answ = {
+              status: '201',
+              message: 'User is created',
+              user: {
+                ...results,
+              },
+            };
             res.status(201).send(answ);
           })
           .catch(err => next(err.toString()));
