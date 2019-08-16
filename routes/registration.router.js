@@ -90,21 +90,24 @@ async function regInDataBaseUser({
         ErrorHandler(profile);
       })
       .catch(e => ErrorHandler(e, { show: true }));
-
-    await db.Profiles.findOrCreate({
-      where: {
-        userId,
-        PublicProfileId,
-        AccountProfileId,
-        SettingsProfileId,
-      },
-    })
-      .then(([profile, created]) => {
-        resolve(profile);
-        ErrorHandler(profile);
+    if (userId && PublicProfileId && AccountProfileId && SettingsProfileId) {
+      await db.Profiles.findOrCreate({
+        where: {
+          userId,
+          PublicProfileId,
+          AccountProfileId,
+          SettingsProfileId,
+        },
       })
-      .catch(e => ErrorHandler(e, { show: true }));
-    resolve();
+        .then(([profile, created]) => {
+          resolve(profile);
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: true }));
+    } else {
+      resolve({});
+    }
+    
   });
 }
 
@@ -142,9 +145,9 @@ router.post('/', (req, res, next) => {
       if (!err) {
         await regInDataBaseUser(result)
           .then(a => {
-            const {password, passwordConfirm, ...result} = result;
+            const {password, passwordConfirm, ...results} = result;
             const answ = {status: '201', message: 'User is created', user: {
-              ...result
+              ...results
             }}
             res.status(201).send(answ);
           })
