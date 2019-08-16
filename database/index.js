@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: true,
     },
-    logging: false,
+    logging: true,
   }
 );
 
@@ -82,7 +82,10 @@ db.sequelize.sync({ force: true }).then(() => {
           SettingsProfileId: 1,
         },
       })
-        .then(profile => ErrorHandler(profile))
+        .then(([profile, created]) => {
+          console.log( created ? 'Done' : 'Fail');
+          ErrorHandler(profile);
+        })
         .catch(e => ErrorHandler(e, { show: true }));
     })
     .catch(e => ErrorHandler(e, { show: true }));
