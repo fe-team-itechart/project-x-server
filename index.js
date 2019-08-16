@@ -14,7 +14,7 @@ const {
 
 app.use(express.json());
 
-app.use('/registration', registrationRouter);
+app.use('/api/user/', registrationRouter);
 
 app.use((error, req, res, next) => {
   res.send(error);
