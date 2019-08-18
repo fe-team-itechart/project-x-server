@@ -1,23 +1,20 @@
 const express = require('express');
 
-require("dotenv").config();
+require('dotenv').config();
 const routers = require('./routes');
 
 const app = express();
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080;
 
-const {
-  registrationRouter,
-  authRouter
-} = routers;
+const { registrationRouter, authRouter } = routers;
 
 app.use(express.json());
 
 app.use('/api/user/', registrationRouter);
 
 app.use((error, req, res, next) => {
-  res.send(error);
+  res.status(401).send({ status: 401, message: error });
 });
 
 app.listen(PORT, function() {
