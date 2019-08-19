@@ -14,7 +14,7 @@ app.use(express.json());
 app.use('/api/user/', registrationRouter);
 
 app.use((error, req, res, next) => {
-  res.status(401).send({ status: 401, message: error });
+  res.status(400).send({ status: 400, message: error.toString() });
 });
 
 app.listen(PORT, function() {
