@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: true,
     },
-    logging: true,
+    logging: false,
   }
 );
 
@@ -32,7 +32,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: false }).then(() => {
   db.Users.findOrCreate({
     where: {
       email: 'admin@admin.com',
@@ -56,7 +56,7 @@ db.sequelize.sync({ force: true }).then(() => {
     where: {
       id: 1,
       info: {
-        "field": "value",
+        field: 'value',
       },
     },
   })
@@ -68,7 +68,7 @@ db.sequelize.sync({ force: true }).then(() => {
       id: 1,
       localization: 'ru',
       secureSetts: {
-        "field": "value",
+        field: 'value',
       },
     },
   })
@@ -83,14 +83,12 @@ db.sequelize.sync({ force: true }).then(() => {
         },
       })
         .then(([profile, created]) => {
-          console.log( created ? 'Done' : 'Fail');
+          ErrorHandler('Initializing of DB is Done', { show: true });
           ErrorHandler(profile);
         })
         .catch(e => ErrorHandler(e, { show: true }));
     })
     .catch(e => ErrorHandler(e, { show: true }));
-
- 
 });
 
 module.exports = db;

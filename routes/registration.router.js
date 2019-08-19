@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const schema = require('../validation/registration.validation');
-const regInDataBaseUser = require('../services/registrationUser')
+const regInDataBaseUser = require('../services/registrationUser');
 
 router.post('/registration', (req, res, next) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
@@ -33,7 +33,7 @@ router.post('/registration', (req, res, next) => {
         err.details.forEach(error => {
           errMessage += ` ${error.message}`;
         });
-        throw new Error(errMessage);
+        next(new Error(errMessage));
       }
     });
   } catch (err) {
