@@ -1,9 +1,21 @@
-const express = require('express');
-const router = express.Router();
-const schema = require('../validation/registration.validation');
+const services = require('../services/auth');
+const {
+  loginSchema,
+  registrationSchema,
+} = require('../validation/user.validation');
+
 const regInDataBaseUser = require('../services/registrationUser');
 
-router.post('/registration', (req, res, next) => {
+const login = async (req, res) => {
+  const { errors } = loginSchema.validate(req.body);
+  if (errors) {
+    res.status(400).json(errors);
+  }
+  const response = await services.login(req.body);
+  res.send(response);
+};
+
+const registration = async (req, res, next) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
   try {
     const validateObj = {
@@ -13,10 +25,10 @@ router.post('/registration', (req, res, next) => {
       password,
       passwordConfirm,
     };
-    schema.validate(validateObj, async function(err, result) {
+    registrationSchema.validate(validateObj, async function(err, result) {
       if (!err) {
         await regInDataBaseUser(result)
-          .then(a => {
+          .then(() => {
             const { password, passwordConfirm, ...results } = result;
             const answ = {
               status: '201',
@@ -39,6 +51,9 @@ router.post('/registration', (req, res, next) => {
   } catch (err) {
     next(err.toString());
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  login,
+  registration,
+};

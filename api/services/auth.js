@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const models = require('../database');
+const models = require('../../database');
 
 const generateToken = payload => {
   const user = {

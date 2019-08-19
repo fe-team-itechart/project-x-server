@@ -1,7 +1,8 @@
-const express = require('express');
 require('dotenv').config();
+
+const express = require('express');
 const bodyParser = require('body-parser');
-const users = require('./routes/user');
+const { user } = require('./api/routes');
 
 const app = express();
 
@@ -10,10 +11,10 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(express.json());
 
-app.use('/api/users/', users);
+app.use('/api/users/', user);
 
 /**
- * TODO:  Rewrite errors from login and registration routers
+ * TODO:  Rewrite processing of errors from login and registration routers
  */
 
 app.use(function(error, req, res, next) {
