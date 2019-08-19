@@ -1,20 +1,27 @@
 const express = require('express');
-
 require('dotenv').config();
-const routers = require('./routes');
+const bodyParser = require('body-parser');
+const users = require('./routes/user');
 
 const app = express();
 
 const PORT = process.env.PORT || 8080;
 
-const { registrationRouter, authRouter } = routers;
-
+app.use(bodyParser.json());
 app.use(express.json());
 
-app.use('/api/user/', registrationRouter);
+app.use('/api/users/', users);
 
-app.use((error, req, res, next) => {
-  res.status(400).send({ status: 400, message: error.toString() });
+/**
+ * TODO:  Rewrite errors from login and registration routers
+ */
+
+app.use(function(error, req, res, next) {
+  if (error.message) {
+    res.status(400).json({ message: error.message });
+  } else {
+    res.status(400).send({ status: 400, message: error.toString() });
+  }
 });
 
 app.listen(PORT, function() {
