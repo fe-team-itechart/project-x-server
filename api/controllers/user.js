@@ -28,7 +28,7 @@ const registration = async (req, res, next) => {
     registrationSchema.validate(validateObj, async function(err, result) {
       if (!err) {
         await regInDataBaseUser(result)
-          .then(a => {
+          .then(() => {
             const { password, passwordConfirm, ...results } = result;
             const answ = {
               status: '201',

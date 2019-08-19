@@ -18,7 +18,6 @@ app.use('/api/users/', user);
  */
 
 app.use(function(error, req, res, next) {
-  console.log(error);
   if (error.message) {
     res.status(400).json({ message: error.message });
   } else {
