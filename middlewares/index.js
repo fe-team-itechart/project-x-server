@@ -1,4 +1,3 @@
-//refresh token
 const jwtDecode = require('jwt-decode');
 const jwt = require('jsonwebtoken');
 
@@ -7,9 +6,9 @@ const refreshAccessToken = (req, res, next) => {
   const user = {
     id: decodedToken.sub,
     name: decodedToken.name,
-    expiresIn: 11111,
+    expiresIn: process.env.EXPIRES_IN,
   };
-  const token = jwt.sign(user, process.env.KEYWORD);
+  const token = jwt.sign(user, process.env.SECRET);
   req.headers.authorization = token;
   next();
 };

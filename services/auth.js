@@ -8,22 +8,22 @@ const generateToken = payload => {
     id: payload.id,
     email: payload.email,
   };
-  const token = jwt.sign(user, process.env.KEYWORD, {
-    expiresIn: process.env.LIFETIME,
+  const token = jwt.sign(user, process.env.SECRET, {
+    expiresIn: process.env.EXPIRES_IN,
   });
   return { token: token };
 };
 
-// const validPassword = (password, hash) => {
-//   return bcrypt.compareSync(password, hash);
-// };
+const validPassword = (password, hash) => {
+  return bcrypt.compareSync(password, hash);
+};
 
 const login = async data => {
   const email = data.email;
   const password = data.password;
   const user = await models.Users.findOne({ where: { email } });
   if (!user) throw Error('User not found.');
-  if (data.password !== user.dataValues.password) {
+  if (!validPassword(password, user.password)) {
     throw Error('Wrong password.');
   }
 

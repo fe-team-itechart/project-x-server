@@ -4,8 +4,8 @@ const controllers = require('../controllers/user');
 
 const middlewares = require('../middlewares/index');
 
-//router.use(middlewares.refreshAccessToken);
-
 router.post('/login', controllers.login);
+
+router.post('/registration', controllers.registration);
 
 module.exports = router;

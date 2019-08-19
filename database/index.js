@@ -82,7 +82,10 @@ db.sequelize.sync({ force: false }).then(() => {
           SettingsProfileId: 1,
         },
       })
-        .then(profile => ErrorHandler(profile))
+        .then(([profile, created]) => {
+          ErrorHandler('Initializing of DB is Done', { show: true });
+          ErrorHandler(profile);
+        })
         .catch(e => ErrorHandler(e, { show: true }));
     })
     .catch(e => ErrorHandler(e, { show: true }));

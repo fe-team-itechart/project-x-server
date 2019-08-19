@@ -1,19 +1,9 @@
-const services = require('../services/auth');
-const loginSchema = require('../validation/loginSchema');
-
+const express = require('express');
+const router = express.Router();
 const schema = require('../validation/registration.validation');
 const regInDataBaseUser = require('../services/registrationUser');
 
-const login = async (req, res) => {
-  const { errors } = loginSchema.validate(req.body);
-  if (errors) {
-    res.status(400).json(errors);
-  }
-  const response = await services.login(req.body);
-  res.send(response);
-};
-
-const registration = async (req, res, next) => {
+router.post('/registration', (req, res, next) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
   try {
     const validateObj = {
@@ -49,9 +39,6 @@ const registration = async (req, res, next) => {
   } catch (err) {
     next(err.toString());
   }
-};
+});
 
-module.exports = {
-  login,
-  registration,
-};
+module.exports = router;
