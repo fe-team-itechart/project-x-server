@@ -1,5 +1,5 @@
-const ErrorHandler = require('./error.handler');
+const authService = require('./auth');
 
 module.exports = {
-  ErrorHandler,
+  authService,
 };
