@@ -23,7 +23,7 @@ const registration = async (req, res, next) => {
     registrationSchema.validate(validateObj, async function(err, result) {
       if (!err) {
         await services
-          .regInDataBaseUser(result)
+          .registration(result)
           .then(async () => {
             const { password, passwordConfirm, ...results } = result;
             const { token } = await services.login({

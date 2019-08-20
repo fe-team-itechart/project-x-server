@@ -19,7 +19,7 @@ const login = async data => {
  *  https://sequelize.org/master/manual/transactions.html
  */
 
-async function regInDataBaseUser({ firstName, lastName, email, password }) {
+async function registration({ firstName, lastName, email, password }) {
   let newPass = await hashHelpers.createHash(password);
   return new Promise(async (resolve, reject) => {
     let userId = null;
@@ -107,5 +107,5 @@ async function regInDataBaseUser({ firstName, lastName, email, password }) {
 
 module.exports = {
   login,
-  regInDataBaseUser,
+  registration,
 };
