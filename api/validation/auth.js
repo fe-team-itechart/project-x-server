@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 
-const keys = {
+const schemas = {
   firstName: Joi.string()
     .min(1)
     .max(20),
@@ -19,11 +19,10 @@ const keys = {
   passwordConfirm: Joi.ref('password'),
 };
 
-const registrationSchema = Joi.object().keys(keys);
-const loginSchema = Joi.object().keys(keys).optionalKeys('firstName', 'lastName', 'passwordConfirm');
+const registrationSchema = Joi.object().keys(schemas);
+const loginSchema = Joi.object().keys(schemas).optionalKeys('firstName', 'lastName', 'passwordConfirm');
 
 module.exports = {
   loginSchema,
   registrationSchema,
-  
 };

@@ -1,10 +1,5 @@
 const services = require('../services/auth');
-const {
-  loginSchema,
-  registrationSchema,
-} = require('../validation/user.validation');
-
-const regInDataBaseUser = require('../services/registrationUser');
+const { loginSchema, registrationSchema } = require('../validation/auth');
 
 const login = async (req, res) => {
   const { errors } = loginSchema.validate(req.body);
@@ -33,17 +28,24 @@ const registration = async (req, res, next) => {
     };
     registrationSchema.validate(validateObj, async function(err, result) {
       if (!err) {
-        await regInDataBaseUser(result)
-          .then(() => {
-            const { password, passwordConfirm, ...results } = result;
-            const answ = {
+        await services
+          .registration(result)
+          .then(async () => {
+            const { password, passwordConfirm, email, ...results } = result;
+            const { token } = await services.login({
+              email,
+              password,
+            });
+            const response = {
               status: '201',
               message: 'User is created',
               user: {
+                email,
                 ...results,
               },
+              token,
             };
-            res.status(201).send(answ);
+            res.status(201).send(response);
           })
           .catch(err => next(err.toString()));
       } else {
