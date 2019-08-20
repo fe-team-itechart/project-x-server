@@ -1,35 +1,111 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-
-const models = require('../../database');
-
-const generateToken = payload => {
-  const user = {
-    id: payload.id,
-    email: payload.email,
-  };
-  const token = jwt.sign(user, process.env.SECRET, {
-    expiresIn: process.env.EXPIRES_IN,
-  });
-  return { token: token };
-};
-
-const validPassword = (password, hash) => {
-  return bcrypt.compareSync(password, hash);
-};
+const { hashHelpers, jwtHelpers } = require('../helpers');
+const { ErrorHandler } = require('../middlewares/errorHandler');
+const db = require('../../database');
 
 const login = async data => {
   const email = data.email;
   const password = data.password;
-  const user = await models.Users.findOne({ where: { email } });
+  const user = await db.Users.findOne({ where: { email } });
   if (!user) throw Error('User not found.');
-  if (!validPassword(password, user.password)) {
+  if (!hashHelpers.validPassword(password, user.password)) {
     throw Error('Wrong password.');
   }
 
-  return generateToken(user.dataValues);
+  return jwtHelpers.generateToken(user.dataValues);
 };
+
+/**
+ * TODO: It needs to rebuild process of creating user Instance with Transactions
+ *  https://sequelize.org/master/manual/transactions.html
+ */
+
+async function regInDataBaseUser({ firstName, lastName, email, password }) {
+  let newPass = await hashHelpers.createHash(password);
+  return new Promise(async (resolve, reject) => {
+    let userId = null;
+    await db.Users.findOrCreate({
+      where: {
+        email,
+      },
+      defaults: {
+        password: newPass,
+      },
+    }).then(([user, created]) => {
+      if (created) {
+        userId = user.id;
+      } else {
+        reject(`Already exist ${user.email}`);
+      }
+    });
+    let PublicProfileId = null;
+    if (userId) {
+      await db.PublicProfiles.findOrCreate({
+        where: {
+          id: userId,
+        },
+        defaults: {
+          firstName,
+          lastName,
+        },
+      })
+        .then(([profile, created]) => {
+          PublicProfileId = profile.id;
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: false }));
+
+      let AccountProfileId = null;
+      await db.AccountProfiles.findOrCreate({
+        where: {
+          id: userId,
+        },
+        defaults: {
+          info: {},
+        },
+      })
+        .then(([profile, created]) => {
+          AccountProfileId = created ? profile.id : null;
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: true }));
+
+      let SettingsProfileId = null;
+      await db.SettingsProfiles.findOrCreate({
+        where: {
+          id: userId,
+        },
+        defaults: {
+          localization: 'ru',
+          secureSetts: {},
+        },
+      })
+        .then(([profile, created]) => {
+          SettingsProfileId = created ? profile.id : null;
+          ErrorHandler(profile);
+        })
+        .catch(e => ErrorHandler(e, { show: true }));
+      if (userId && PublicProfileId && AccountProfileId && SettingsProfileId) {
+        await db.Profiles.findOrCreate({
+          where: {
+            userId,
+            PublicProfileId,
+            AccountProfileId,
+            SettingsProfileId,
+          },
+        })
+          .then(([profile, created]) => {
+            resolve(profile);
+            ErrorHandler(profile);
+          })
+          .catch(e => ErrorHandler(e, { show: true }));
+      } else {
+        resolve({});
+      }
+    }
+  });
+}
 
 module.exports = {
   login,
+  regInDataBaseUser,
 };
