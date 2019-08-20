@@ -1,17 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 const createHash = pass => {
-  return new Promise(resolve => {
-    bcrypt.genSalt(10, async (err, salt) => {
-      if (!err) {
-        bcrypt.hash(pass, salt, async (err, hash) => {
-          if (!err) {
-            resolve(hash);
-          }
-        });
-      }
-    });
-  });
+  return bcrypt.genSalt(10).then(salt => bcrypt.hash(pass, salt));
 };
 
 const validPassword = (password, hash) => {

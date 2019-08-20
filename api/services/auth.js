@@ -2,15 +2,12 @@ const { hashHelpers, jwtHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
 const db = require('../../database');
 
-const login = async data => {
-  const email = data.email;
-  const password = data.password;
+const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
   if (!user) throw Error('User not found.');
   if (!hashHelpers.validPassword(password, user.password)) {
     throw Error('Wrong password.');
   }
-
   return jwtHelpers.generateToken(user.dataValues);
 };
 
@@ -20,7 +17,7 @@ const login = async data => {
  */
 
 async function registration({ firstName, lastName, email, password }) {
-  let newPass = await hashHelpers.createHash(password);
+  const newPass = await hashHelpers.createHash(password);
   return new Promise(async (resolve, reject) => {
     let userId = null;
     await db.Users.findOrCreate({

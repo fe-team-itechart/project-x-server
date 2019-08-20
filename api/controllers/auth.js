@@ -25,20 +25,21 @@ const registration = async (req, res, next) => {
         await services
           .registration(result)
           .then(async () => {
-            const { password, passwordConfirm, ...results } = result;
+            const { password, passwordConfirm, email, ...results } = result;
             const { token } = await services.login({
-              email: result.email,
+              email,
               password,
             });
-            const answ = {
+            const response = {
               status: '201',
               message: 'User is created',
               user: {
+                email,
                 ...results,
               },
               token,
             };
-            res.status(201).send(answ);
+            res.status(201).send(response);
           })
           .catch(err => next(err.toString()));
       } else {
