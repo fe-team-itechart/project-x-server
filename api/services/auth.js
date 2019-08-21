@@ -11,29 +11,54 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
+const googleLogin = async data => {
+  const payload = {
+    firstName: data.payload.profileObj.givenName,
+    lastName: data.payload.profileObj.familyName,
+    email: data.payload.profileObj.email,
+    token: data.payload.Zi.id_token,
+  };
+  registration(payload);
+  return jwtHelpers.generateToken(payload);
+};
 /**
  * TODO: It needs to rebuild process of creating user Instance with Transactions
  *  https://sequelize.org/master/manual/transactions.html
  */
 
-async function registration({ firstName, lastName, email, password }) {
-  const newPass = await hashHelpers.createHash(password);
+async function registration({ firstName, lastName, email, password, token }) {
+  let newPass;
+
   return new Promise(async (resolve, reject) => {
     let userId = null;
-    await db.Users.findOrCreate({
-      where: {
-        email,
-      },
-      defaults: {
-        password: newPass,
-      },
-    }).then(([user, created]) => {
-      if (created) {
-        userId = user.id;
-      } else {
-        reject(`Already exist ${user.email}`);
-      }
-    });
+    if (password) {
+      newPass = await hashHelpers.createHash(password);
+      await db.Users.findOrCreate({
+        where: {
+          email,
+        },
+        defaults: {
+          password: newPass,
+        },
+      }).then(([user, created]) => {
+        if (created) {
+          userId = user.id;
+        } else {
+          reject(`Already exist ${user.email}`);
+        }
+      });
+    } else {
+      await db.Users.findOrCreate({
+        where: {
+          token,
+          email,
+        },
+      }).then(([user, created]) => {
+        if (created) {
+          userId = user.id;
+        }
+      });
+    }
     let PublicProfileId = null;
     if (userId) {
       await db.PublicProfiles.findOrCreate({
@@ -105,4 +130,5 @@ async function registration({ firstName, lastName, email, password }) {
 module.exports = {
   login,
   registration,
+  googleLogin,
 };

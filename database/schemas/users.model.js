@@ -8,6 +8,10 @@ module.exports = (sequalize, type) => {
       password: {
         type: type.STRING(100),
       },
+      token:{
+        type:type.TEXT,
+        allowNull:true,
+      },
       id: {
         type: type.INTEGER,
         autoIncrement: true,
