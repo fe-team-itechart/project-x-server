@@ -16,6 +16,7 @@ const googleLogin = async data => {
     firstName: data.payload.profileObj.givenName,
     lastName: data.payload.profileObj.familyName,
     email: data.payload.profileObj.email,
+    token:data.payload.Zi.id_token
   };
   registration(payload);
   return jwtHelpers.generateToken(payload);
@@ -25,7 +26,7 @@ const googleLogin = async data => {
  *  https://sequelize.org/master/manual/transactions.html
  */
 
-async function registration({ firstName, lastName, email, password }) {
+async function registration({ firstName, lastName, email, password, token }) {
   let newPass;
   if (password) {
     newPass = await hashHelpers.createHash(password);
@@ -50,8 +51,9 @@ async function registration({ firstName, lastName, email, password }) {
     } else {
       await db.Users.findOrCreate({
         where: {
-          email,
-        },
+          token,
+          email
+        }
       }).then(([user, created]) => {
         if (created) {
           userId = user.id;
