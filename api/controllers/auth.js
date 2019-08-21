@@ -10,6 +10,11 @@ const login = async (req, res) => {
   res.send(response);
 };
 
+const googleLogin = async (req, res) => {
+  const response = await services.googleLogin(req.body);
+  res.send(response);
+};
+
 const registration = async (req, res, next) => {
   const { firstName, lastName, email, password, passwordConfirm } = req.body;
   try {
@@ -58,4 +63,5 @@ const registration = async (req, res, next) => {
 module.exports = {
   login,
   registration,
+  googleLogin
 };
