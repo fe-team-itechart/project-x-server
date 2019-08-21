@@ -16,7 +16,7 @@ const googleLogin = async data => {
     firstName: data.payload.profileObj.givenName,
     lastName: data.payload.profileObj.familyName,
     email: data.payload.profileObj.email,
-    token:data.payload.Zi.id_token
+    token: data.payload.Zi.id_token,
   };
   registration(payload);
   return jwtHelpers.generateToken(payload);
@@ -28,12 +28,11 @@ const googleLogin = async data => {
 
 async function registration({ firstName, lastName, email, password, token }) {
   let newPass;
-  if (password) {
-    newPass = await hashHelpers.createHash(password);
-  }
+
   return new Promise(async (resolve, reject) => {
     let userId = null;
     if (password) {
+      newPass = await hashHelpers.createHash(password);
       await db.Users.findOrCreate({
         where: {
           email,
@@ -52,8 +51,8 @@ async function registration({ firstName, lastName, email, password, token }) {
       await db.Users.findOrCreate({
         where: {
           token,
-          email
-        }
+          email,
+        },
       }).then(([user, created]) => {
         if (created) {
           userId = user.id;

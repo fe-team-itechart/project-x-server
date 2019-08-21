@@ -5,5 +5,5 @@ const controllers = require('../controllers/auth');
 router.post('/login', controllers.login);
 
 router.post('/registration', controllers.registration);
-router.post('/google/auth', controllers.googleLogin);
+
 module.exports = router;
