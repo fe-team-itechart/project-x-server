@@ -100,7 +100,7 @@ const googleLogin = async data => {
         }
       }
     });
-    return generateToken(payload)
+    return jwtHelpers.generateToken(payload)
   }
 };
 /**

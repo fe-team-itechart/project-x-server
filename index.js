@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use(cors())
 
-app.use('/api/users/', user);
+app.use('/api/users/', auth);
 
 /**
  * TODO:  Rewrite processing of errors from login and registration routers
