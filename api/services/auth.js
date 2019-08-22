@@ -1,12 +1,13 @@
 const { hashHelpers, jwtHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
+const errors = require('./errorHandlers/index');
 const db = require('../../database');
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  if (!user) throw new errors.UserNotFoundError();
   if (!hashHelpers.validPassword(password, user.password)) {
-    throw Error('Wrong password.');
+    throw new errors.WrongPasswordError();
   }
   return jwtHelpers.generateToken(user.dataValues);
 };
