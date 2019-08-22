@@ -127,8 +127,20 @@ async function registration({ firstName, lastName, email, password, token }) {
   });
 }
 
+const changePassword = async ({ email, password }) => {
+  const newPassword = await hashHelpers.createHash(password);
+  const user = await db.Users.findOne({ where: { email } });
+  if (!user) throw Error('User not found.');
+  await db.Users.update(
+    { password: newPassword },
+    { returning: true, where: { email } }
+  );
+  return user;
+};
+
 module.exports = {
   login,
   registration,
   googleLogin,
+  changePassword,
 };
