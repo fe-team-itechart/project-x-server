@@ -19,6 +19,10 @@ module.exports = (sequalize, type) => {
       updatedAt: {
         type: type.DATE,
       },
+      token: {
+        type: type.TEXT,
+        allowNull: true,
+      },
     },
     {
       timestamps: true,

@@ -21,8 +21,12 @@ const schemas = {
 
 const registrationSchema = Joi.object().keys(schemas);
 const loginSchema = Joi.object().keys(schemas).optionalKeys('firstName', 'lastName', 'passwordConfirm');
+const emailSchema = loginSchema.optionalKeys('password');
+const passwordSchema = Joi.object().keys(schemas).optionalKeys('firstName', 'lastName', 'email');;
 
 module.exports = {
   loginSchema,
   registrationSchema,
+  emailSchema,
+  passwordSchema
 };

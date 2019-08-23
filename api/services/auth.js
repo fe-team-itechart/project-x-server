@@ -1,4 +1,5 @@
-const { hashHelpers, jwtHelpers } = require('../helpers');
+const nodemailer = require('nodemailer');
+const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
 const db = require('../../database');
 
@@ -102,7 +103,71 @@ async function registration({ firstName, lastName, email, password }) {
   });
 }
 
+/**
+ * TODO: It needs to think about creating link for reset password
+ * @param {*} param0 - object which contents email field
+ */
+
+const resetPasswordRequest = async ({ email }) => {
+  try {
+    let v = await db.Users.findOne({ where: { email } });
+    let linkId = v && (await hashHelpers.createHash(email));
+
+    let forgotPassword =
+      v &&
+      (await db.ForgotPassword.findOrCreate({
+        where: { linkId },
+        defaults: { UserId: v.id },
+      }));
+    let linkId2 = encodeURIComponent(linkId);
+    const info =
+      v && linkId && forgotPassword
+        ? await emailHelpers.sendEmail(
+            email,
+            `Follow link http://localhost:3000/reset?id=${linkId2}`,
+            `http://localhost:3000/reset?id=${linkId2}`
+          )
+        : { message: 'User not founded', status: 400 };
+    console.log(nodemailer.getTestMessageUrl(info), 'fdf');
+    return info;
+  } catch (e) {
+    throw new Error(e.toString());
+  }
+};
+
+const resetPasswordApprove = async ({ linkId }) => {
+  try {
+    const { UserId } = await db.ForgotPassword.findOne({ where: { linkId } });
+    return UserId;
+  } catch (e) {
+    throw new Error(e.toString());
+  }
+};
+
+const resetPassword = async ({ password, linkId }) => {
+  try {
+    const linkId2 = decodeURIComponent(linkId);
+    const link = await db.ForgotPassword.findOne({ where: { linkId: linkId2 } });
+    const { UserId } = link;
+    link.destroy();
+    const User = await db.Users.findOne({where: { id: UserId }});
+    const newPass = await hashHelpers.createHash(password);
+    const user = User.update({
+      password: newPass,
+    });
+    return (user) && {
+      status: 200,
+      message: 'Password updated'
+    };
+  } catch (e) {
+    throw new Error(e.toString());
+  }
+};
+
 module.exports = {
   login,
   registration,
+  resetPasswordRequest,
+  resetPasswordApprove,
+  resetPassword
 };
