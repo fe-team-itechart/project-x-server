@@ -3,6 +3,8 @@ const cors = require('cors')
 const express = require('express');
 const bodyParser = require('body-parser');
 
+require('express-async-errors');
+
 const { auth } = require('./api/routes');
 const { errorHandlerMiddleware } = require('./api/middlewares');
 
