@@ -1,40 +1,66 @@
 const nodemailer = require('nodemailer');
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
+const errors = require('./errorHandlers/index');
 const db = require('../../database');
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  if (!user) throw new errors.UserNotFoundError();
   if (!hashHelpers.validPassword(password, user.password)) {
-    throw Error('Wrong password.');
+    throw new errors.WrongPasswordError();
   }
   return jwtHelpers.generateToken(user.dataValues);
 };
 
+const googleLogin = async data => {
+  const payload = {
+    firstName: data.payload.profileObj.givenName,
+    lastName: data.payload.profileObj.familyName,
+    email: data.payload.profileObj.email,
+    token: data.payload.Zi.id_token,
+  };
+  registration(payload);
+  return jwtHelpers.generateToken(payload);
+};
 /**
  * TODO: It needs to rebuild process of creating user Instance with Transactions
  *  https://sequelize.org/master/manual/transactions.html
  */
 
-async function registration({ firstName, lastName, email, password }) {
-  const newPass = await hashHelpers.createHash(password);
+async function registration({ firstName, lastName, email, password, token }) {
+  let newPass;
+
   return new Promise(async (resolve, reject) => {
     let userId = null;
-    await db.Users.findOrCreate({
-      where: {
-        email,
-      },
-      defaults: {
-        password: newPass,
-      },
-    }).then(([user, created]) => {
-      if (created) {
-        userId = user.id;
-      } else {
-        reject(`Already exist ${user.email}`);
-      }
-    });
+    if (password) {
+      newPass = await hashHelpers.createHash(password);
+      await db.Users.findOrCreate({
+        where: {
+          email,
+        },
+        defaults: {
+          password: newPass,
+        },
+      }).then(([user, created]) => {
+        if (created) {
+          userId = user.id;
+        } else {
+          reject(`Already exist ${user.email}`);
+        }
+      });
+    } else {
+      await db.Users.findOrCreate({
+        where: {
+          token,
+          email,
+        },
+      }).then(([user, created]) => {
+        if (created) {
+          userId = user.id;
+        }
+      });
+    }
     let PublicProfileId = null;
     if (userId) {
       await db.PublicProfiles.findOrCreate({
@@ -128,7 +154,7 @@ const resetPasswordRequest = async ({ email }) => {
             `http://localhost:3000/reset?id=${linkId2}`
           )
         : { message: 'User not founded', status: 400 };
-    console.log(nodemailer.getTestMessageUrl(info), 'fdf');
+    console.log(nodemailer.getTestMessageUrl(info));
     return info;
   } catch (e) {
     throw new Error(e.toString());
@@ -162,6 +188,18 @@ const resetPassword = async ({ password, linkId }) => {
   } catch (e) {
     throw new Error(e.toString());
   }
+
+};
+
+const changePassword = async ({ email, password }) => {
+  const newPassword = await hashHelpers.createHash(password);
+  const user = await db.Users.findOne({ where: { email } });
+  if (!user) throw Error('User not found.');
+  await db.Users.update(
+    { password: newPassword },
+    { returning: true, where: { email } }
+  );
+  return user;
 };
 
 module.exports = {
@@ -169,5 +207,7 @@ module.exports = {
   registration,
   resetPasswordRequest,
   resetPasswordApprove,
-  resetPassword
+  resetPassword,
+  googleLogin,
+  changePassword,
 };
