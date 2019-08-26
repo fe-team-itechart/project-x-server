@@ -5,6 +5,7 @@ const AccountProfile = require('./accountProfiles.model');
 const SettingsProfiles = require('./settsProfiles.model');
 const CoursesProfiles = require('./coursesProfiles.model');
 const Courses = require('./courses.model');
+const ForgotPassword = require('./forgotPassword.model');
 
 module.exports = {
   Profiles,
@@ -14,4 +15,5 @@ module.exports = {
   SettingsProfiles,
   CoursesProfiles,
   Courses,
+  ForgotPassword,
 };
