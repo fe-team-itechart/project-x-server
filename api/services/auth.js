@@ -21,6 +21,19 @@ const googleLogin = async data => {
   registration(payload);
   return jwtHelpers.generateToken(payload);
 };
+
+const linkedInLogin = async data => {
+  // const payload = {
+  //   firstName: data.payload.profileObj.givenName,
+  //   lastName: data.payload.profileObj.familyName,
+  //   email: data.payload.profileObj.email,
+  //   token: data.payload.Zi.id_token,
+  // };
+  // registration(payload);
+  // return jwtHelpers.generateToken(payload);
+  console.log(data);
+};
+
 /**
  * TODO: It needs to rebuild process of creating user Instance with Transactions
  *  https://sequelize.org/master/manual/transactions.html
@@ -28,7 +41,6 @@ const googleLogin = async data => {
 
 async function registration({ firstName, lastName, email, password, token }) {
   let newPass;
-
   return new Promise(async (resolve, reject) => {
     let userId = null;
     if (password) {
@@ -131,4 +143,5 @@ module.exports = {
   login,
   registration,
   googleLogin,
+  linkedInLogin,
 };
