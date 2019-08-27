@@ -11,13 +11,13 @@ const login = async (req, res) => {
 };
 
 const googleLogin = async (req, res) => {
-  const response = await services.googleLogin(req.body);
-  res.send(response);
+  const response = await services.googleLogin(req.user);
+  res.redirect('http://localhost:3000/?tokenGoogle=' + response);
 };
 
-const linkedInLogin = async (req, res) => {
-  const response = await services.linkedInLogin(req.body);
-  res.send(response);
+const linkeinLogin = async (req, res) => {
+  const response = await services.linkeinLogin(req.user);
+  res.redirect('http://localhost:3000/?tokenLinkedin=' + response);
 };
 
 const registration = async (req, res, next) => {
@@ -69,5 +69,5 @@ module.exports = {
   login,
   registration,
   googleLogin,
-  linkedInLogin
+  linkeinLogin,
 };

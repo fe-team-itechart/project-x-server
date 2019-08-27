@@ -12,26 +12,13 @@ const login = async ({ email, password }) => {
 };
 
 const googleLogin = async data => {
-  const payload = {
-    firstName: data.payload.profileObj.givenName,
-    lastName: data.payload.profileObj.familyName,
-    email: data.payload.profileObj.email,
-    token: data.payload.Zi.id_token,
-  };
-  registration(payload);
-  return jwtHelpers.generateToken(payload);
+  registration(data);
+  return jwtHelpers.generateToken(data);
 };
 
-const linkedInLogin = async data => {
-  // const payload = {
-  //   firstName: data.payload.profileObj.givenName,
-  //   lastName: data.payload.profileObj.familyName,
-  //   email: data.payload.profileObj.email,
-  //   token: data.payload.Zi.id_token,
-  // };
-  // registration(payload);
-  // return jwtHelpers.generateToken(payload);
-  console.log(data);
+const linkeinLogin = async data => {
+  registration(data);
+  return jwtHelpers.generateToken(data);
 };
 
 /**
@@ -39,7 +26,7 @@ const linkedInLogin = async data => {
  *  https://sequelize.org/master/manual/transactions.html
  */
 
-async function registration({ firstName, lastName, email, password, token }) {
+async function registration({ firstName, lastName, email, password }) {
   let newPass;
   return new Promise(async (resolve, reject) => {
     let userId = null;
@@ -62,7 +49,6 @@ async function registration({ firstName, lastName, email, password, token }) {
     } else {
       await db.Users.findOrCreate({
         where: {
-          token,
           email,
         },
       }).then(([user, created]) => {
@@ -143,5 +129,5 @@ module.exports = {
   login,
   registration,
   googleLogin,
-  linkedInLogin,
+  linkeinLogin,
 };

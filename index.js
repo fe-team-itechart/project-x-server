@@ -5,6 +5,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
+const session = require('express-session')
+
 const { auth } = require('./api/routes');
 const { errorHandlerMiddleware } = require('./api/middlewares');
 
