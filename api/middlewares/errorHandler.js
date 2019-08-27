@@ -9,7 +9,7 @@ const ErrorHandler = (error, options) => {
 };
 
 const errorHandlerMiddleware = (error, req, res, next) => {
-  res.json({ name: error.name, status: error.status, message: error.message });
+  res.status(error.status).json({ name: error.name, status: error.status, message: error.message });
 };
 
 module.exports = {

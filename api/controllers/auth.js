@@ -4,9 +4,10 @@ const {
   registrationSchema,
   emailSchema,
   passwordSchema,
+  validateAuth
 } = require('../validation/auth');
-const { validateAuth } = require('../validation/auth');
 const { isEmpty } = require('lodash');
+const errors = require('../services/errorHandlers');
 
 const login = async (req, res) => {
   const errors = validateAuth(req.body);
@@ -53,20 +54,22 @@ const registration = async (req, res, next) => {
 const reset = async (req, res, next) => {
   const { email } = req.body;
   try {
-    const v = await emailSchema.validate({ email });
-    const a = v && (await services.resetPasswordRequest({ email }));
-    let status = a.status ? a.status : 200;
-    let response = a.messageId ? 'Mail was sent' : a.message;
+    const validation = await emailSchema.validate({ email });
+    const answer = validation && (await services.resetPasswordRequest({ email }));
+    let status = answer.status ? answer.status : 200;
+    let response = answer.messageId ? 'Mail was sent' : answer.message;
     res.status(status).send(response);
   } catch (e) {
-    next(e);
+    next(new errors.ResetPasswordRequestError(e.message));
   }
-  //
 };
 
 const resetApprovementPassword = async (req, res, next) => {
-  const { linkId } = req.params;
   try {
+    const { linkId } = req.params;
+    if (!linkId) {
+      throw new error.ResetPasswordApproveError('Empty params');
+    }
     const UserId = await services.resetPasswordApprove({
       linkId: decodeURIComponent(linkId),
     });
@@ -83,12 +86,18 @@ const resetApprovementPassword = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   const { linkId, password, passwordConfirm } = req.body;
-  try {
-    const v = await passwordSchema.validate({ password, passwordConfirm });
-    const a = v && (await services.resetPassword({ password, linkId }));
-    res.status(200).send(a);
-  } catch (e) {
+  if ((!linkId) || (!password) || (!passwordConfirm)) {
+    let e = new errors.ResetPasswordError('Empty params');
     next(e);
+  }
+  if ((linkId) && (password) && (passwordConfirm)) {
+    try {
+      const validation = await passwordSchema.validate({ password, passwordConfirm });
+      const answer = validation && (await services.resetPassword({ password, linkId }));
+      res.status(200).send(answer);
+    } catch (e) {
+      next(new errors.ResetPasswordError(e.message));
+    }
   }
 };
 

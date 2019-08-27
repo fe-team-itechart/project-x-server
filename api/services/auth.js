@@ -1,8 +1,13 @@
 const nodemailer = require('nodemailer');
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
+const ResetPasswordApproveError = require('../services/errorHandlers/resetPasswordApproveError');
+const ResetPasswordError = require('../services/errorHandlers/resetPasswordError');
+
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
+
+const HOST = process.env.CL_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
@@ -136,28 +141,30 @@ async function registration({ firstName, lastName, email, password, token }) {
 
 const resetPasswordRequest = async ({ email }) => {
   try {
-    let v = await db.Users.findOne({ where: { email } });
-    let linkId = v && (await hashHelpers.createHash(email));
-
-    let forgotPassword =
-      v &&
-      (await db.ForgotPassword.findOrCreate({
-        where: { linkId },
-        defaults: { UserId: v.id },
-      }));
-    let linkId2 = encodeURIComponent(linkId);
-    const info =
-      v && linkId && forgotPassword
-        ? await emailHelpers.sendEmail(
-            email,
-            `Follow link http://localhost:3000/reset?id=${linkId2}`,
-            `http://localhost:3000/reset?id=${linkId2}`
-          )
-        : { message: 'User not founded', status: 400 };
-    console.log(nodemailer.getTestMessageUrl(info));
-    return info;
+    let user = await db.Users.findOne({ where: { email } });
+    if (user) {
+      let linkId = (await hashHelpers.createHash(email));
+      let forgotPassword =
+        (await db.ForgotPassword.findOrCreate({
+          where: { linkId },
+          defaults: { UserId: user.id },
+        }));
+      let linkId2 = encodeURIComponent(linkId);
+      const info =
+        linkId && forgotPassword &&
+           (await emailHelpers.sendEmail(
+              email,
+              `Follow link ${HOST}/reset?id=${linkId2}`,
+              `${HOST}/reset?id=${linkId2}`
+            ));
+      console.log(nodemailer.getTestMessageUrl(info), ' ');
+      return info;
+    }
+    if(!user) {
+      throw new errors.UserNotFoundError();
+    }
   } catch (e) {
-    throw new Error(e.toString());
+    throw new Error(e.message);
   }
 };
 
@@ -166,27 +173,37 @@ const resetPasswordApprove = async ({ linkId }) => {
     const { UserId } = await db.ForgotPassword.findOne({ where: { linkId } });
     return UserId;
   } catch (e) {
-    throw new Error(e.toString());
+    throw new ResetPasswordApproveError();
   }
 };
+
+/**
+ * TODO: It needs to use Transactions
+ * @param {*} param0 
+ */
 
 const resetPassword = async ({ password, linkId }) => {
   try {
     const linkId2 = decodeURIComponent(linkId);
     const link = await db.ForgotPassword.findOne({ where: { linkId: linkId2 } });
-    const { UserId } = link;
-    link.destroy();
-    const User = await db.Users.findOne({where: { id: UserId }});
-    const newPass = await hashHelpers.createHash(password);
-    const user = User.update({
-      password: newPass,
-    });
-    return (user) && {
-      status: 200,
-      message: 'Password updated'
-    };
+    if (link) {
+      const { UserId } = link ;
+      link.destroy();
+      const User = await db.Users.findOne({where: { id: UserId }});
+      const newPass = await hashHelpers.createHash(password);
+      const user = User.update({
+        password: newPass,
+      });
+      return (user) && {
+        status: 200,
+        message: 'Password updated'
+      };
+    }
+    if (!link) {
+      throw new ResetPasswordError();
+    }
   } catch (e) {
-    throw new Error(e.toString());
+    throw new ResetPasswordError(e.message);
   }
 
 };
