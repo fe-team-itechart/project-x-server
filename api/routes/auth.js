@@ -4,7 +4,6 @@ const controllers = require('../controllers/auth');
 const passport = require('passport');
 
 router.post('/login', controllers.login);
-
 router.post('/registration', controllers.registration);
 router.get('/linkedin/auth', (req, res) => {
   res.send(req.body);
@@ -26,4 +25,5 @@ router.get(
   controllers.linkeinLogin
 );
 
+router.put('/change-password', controllers.changePassword);
 module.exports = router;
