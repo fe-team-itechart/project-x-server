@@ -11,7 +11,7 @@ router.get('/linkedin/auth', (req, res) => {
 });
 router.get(
   '/auth/google',
-  passport.authenticate('google')
+  passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 router.get(
   '/auth/google/callback',
@@ -19,10 +19,7 @@ router.get(
   controllers.googleLogin
 );
 
-router.get(
-  '/auth/linkedin',
-  passport.authenticate('linkedin')
-);
+router.get('/auth/linkedin', passport.authenticate('linkedin'));
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', { failureRedirect: '/', session: false }),

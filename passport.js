@@ -13,14 +13,18 @@ module.exports = passport => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_SECRET,
-        callbackURL: 'http://localhost:8080/api/users/auth/google/callback',
+        callbackURL: process.env.SERVER_HOST + 'api/users/auth/google/callback',
       },
       (accessToken, refreshToken, profile, done) => {
+        const {
+          name: { givenName, familyName },
+          emails,
+        } = profile;
         const userData = {
-          id: profile.id,
-          email: profile.emails[0].value,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
+          id: id,
+          email: emails[0].value,
+          firstName: givenName,
+          lastName: familyName,
           token: accessToken,
         };
         done(null, userData);
@@ -32,15 +36,21 @@ module.exports = passport => {
       {
         clientID: process.env.LINKEDIN_CLIENT_ID,
         clientSecret: process.env.LINKEDIN_SECRET,
-        callbackURL: 'http://localhost:8080/api/users/auth/linkedin/callback',
+        callbackURL:
+          process.env.SERVER_HOST + 'api/users/auth/linkedin/callback',
         scope: ['r_liteprofile', 'r_emailaddress'],
       },
       (accessToken, refreshToken, profile, done) => {
+        const {
+          id,
+          name: { givenName, familyName },
+          emails,
+        } = profile;
         const userData = {
-          id: profile.id,
-          email: profile.emails[0].value,
-          firstName: profile.name.givenName,
-          lastName: profile.name.familyName,
+          id: id,
+          email: emails[0].value,
+          firstName: givenName,
+          lastName: familyName,
           token: accessToken,
         };
         done(null, userData);

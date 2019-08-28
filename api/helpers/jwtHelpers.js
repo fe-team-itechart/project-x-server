@@ -7,10 +7,7 @@ const generateToken = ({ id, email }) => {
   return token;
 };
 
-const decodeToken = token => {
-  return jwt.decode(token);
-};
+
 module.exports = {
   generateToken,
-  decodeToken,
 };

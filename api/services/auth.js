@@ -12,12 +12,12 @@ const login = async ({ email, password }) => {
 };
 
 const googleLogin = async data => {
-  registration(data);
+  await registration(data);
   return jwtHelpers.generateToken(data);
 };
 
 const linkeinLogin = async data => {
-  registration(data);
+  await registration(data);
   return jwtHelpers.generateToken(data);
 };
 

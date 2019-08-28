@@ -12,12 +12,12 @@ const login = async (req, res) => {
 
 const googleLogin = async (req, res) => {
   const response = await services.googleLogin(req.user);
-  res.redirect('http://localhost:3000/?tokenGoogle=' + response);
+  res.redirect(process.env.CLIENT_HOST + '?tokenGoogle=' + response);
 };
 
 const linkeinLogin = async (req, res) => {
   const response = await services.linkeinLogin(req.user);
-  res.redirect('http://localhost:3000/?tokenLinkedin=' + response);
+  res.redirect(process.env.CLIENT_HOST + '?tokenLinkedin=' + response);
 };
 
 const registration = async (req, res, next) => {
