@@ -4,7 +4,7 @@ const {
   registrationSchema,
   emailSchema,
   passwordSchema,
-  validateAuth
+  validateAuth,
 } = require('../validation/auth');
 const { isEmpty } = require('lodash');
 const errors = require('../services/errorHandlers');
@@ -55,12 +55,13 @@ const reset = async (req, res, next) => {
   const { email } = req.body;
   try {
     const validation = await emailSchema.validate({ email });
-    const answer = validation && (await services.resetPasswordRequest({ email }));
+    const answer =
+      validation && (await services.resetPasswordRequest({ email }));
     let status = answer.status ? answer.status : 200;
     let response = answer.messageId ? 'Mail was sent' : answer.message;
     res.status(status).send(response);
   } catch (e) {
-    next(new errors.ResetPasswordRequestError(e.message));
+    throw new errors.ResetPasswordRequestError(e.message);
   }
 };
 
@@ -80,23 +81,26 @@ const resetApprovementPassword = async (req, res, next) => {
       });
     }
   } catch (e) {
-    next(e);
+    throw new error.ResetPasswordApproveError(e.message);
   }
 };
 
 const resetPassword = async (req, res, next) => {
   const { linkId, password, passwordConfirm } = req.body;
-  if ((!linkId) || (!password) || (!passwordConfirm)) {
-    let e = new errors.ResetPasswordError('Empty params');
-    next(e);
+  if (!linkId || !password || !passwordConfirm) {
+    throw new errors.ResetPasswordError('Empty params');
   }
-  if ((linkId) && (password) && (passwordConfirm)) {
+  if (linkId && password && passwordConfirm) {
     try {
-      const validation = await passwordSchema.validate({ password, passwordConfirm });
-      const answer = validation && (await services.resetPassword({ password, linkId }));
+      const validation = await passwordSchema.validate({
+        password,
+        passwordConfirm,
+      });
+      const answer =
+        validation && (await services.resetPassword({ password, linkId }));
       res.status(200).send(answer);
     } catch (e) {
-      next(new errors.ResetPasswordError(e.message));
+      throw new errors.ResetPasswordError(e.message);
     }
   }
 };
@@ -123,4 +127,4 @@ module.exports = {
   resetPassword,
   googleLogin,
   changePassword,
-}
+};
