@@ -51,21 +51,21 @@ const registration = async (req, res, next) => {
   }
 };
 
-const reset = async (req, res, next) => {
+const reset = async (req, res) => {
   const { email } = req.body;
   try {
     const validation = await emailSchema.validate({ email });
     const answer =
       validation && (await services.resetPasswordRequest({ email }));
-    let status = answer.status ? answer.status : 200;
-    let response = answer.messageId ? 'Mail was sent' : answer.message;
+    const status = answer.status ? answer.status : 200;
+    const response = answer.messageId ? 'Mail was sent' : answer.message;
     res.status(status).send(response);
   } catch (e) {
     throw new errors.ResetPasswordRequestError(e.message);
   }
 };
 
-const resetApprovementPassword = async (req, res, next) => {
+const resetApprovementPassword = async (req, res) => {
   try {
     const { linkId } = req.params;
     if (!linkId) {
@@ -85,23 +85,21 @@ const resetApprovementPassword = async (req, res, next) => {
   }
 };
 
-const resetPassword = async (req, res, next) => {
+const resetPassword = async (req, res) => {
   const { linkId, password, passwordConfirm } = req.body;
   if (!linkId || !password || !passwordConfirm) {
     throw new errors.ResetPasswordError('Empty params');
   }
-  if (linkId && password && passwordConfirm) {
-    try {
-      const validation = await passwordSchema.validate({
-        password,
-        passwordConfirm,
-      });
-      const answer =
-        validation && (await services.resetPassword({ password, linkId }));
-      res.status(200).send(answer);
-    } catch (e) {
-      throw new errors.ResetPasswordError(e.message);
-    }
+  try {
+    const validation = await passwordSchema.validate({
+      password,
+      passwordConfirm,
+    });
+    const answer =
+      validation && (await services.resetPassword({ password, linkId }));
+    res.status(200).send(answer);
+  } catch (e) {
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 

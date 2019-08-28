@@ -1,8 +1,10 @@
 const nodemailer = require('nodemailer');
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
-const ResetPasswordApproveError = require('../services/errorHandlers/resetPasswordApproveError');
-const ResetPasswordError = require('../services/errorHandlers/resetPasswordError');
+const {
+  ResetPasswordApproveError,
+  ResetPasswordError,
+} = require('./errorHandlers/index');
 
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
@@ -141,28 +143,26 @@ async function registration({ firstName, lastName, email, password, token }) {
 
 const resetPasswordRequest = async ({ email }) => {
   try {
-    let user = await db.Users.findOne({ where: { email } });
+    const user = await db.Users.findOne({ where: { email } });
     if (user) {
-      let linkId = (await hashHelpers.createHash(email));
-      let forgotPassword =
-        (await db.ForgotPassword.findOrCreate({
-          where: { linkId },
-          defaults: { UserId: user.id },
-        }));
-      let linkId2 = encodeURIComponent(linkId);
+      let linkId = await hashHelpers.createHash(email);
+      const forgotPassword = await db.ForgotPassword.findOrCreate({
+        where: { linkId },
+        defaults: { UserId: user.id },
+      });
+      linkId = encodeURIComponent(linkId);
       const info =
-        linkId && forgotPassword &&
-           (await emailHelpers.sendEmail(
-              email,
-              `Follow link ${HOST}/reset?id=${linkId2}`,
-              `${HOST}/reset?id=${linkId2}`
-            ));
+        linkId &&
+        forgotPassword &&
+        (await emailHelpers.sendEmail(
+          email,
+          `Follow link ${HOST}/reset?id=${linkId}`,
+          `${HOST}/reset?id=${linkId}`
+        ));
       console.log(nodemailer.getTestMessageUrl(info), ' ');
       return info;
     }
-    if(!user) {
-      throw new errors.UserNotFoundError();
-    }
+    throw new errors.UserNotFoundError();
   } catch (e) {
     throw new Error(e.message);
   }
@@ -179,25 +179,29 @@ const resetPasswordApprove = async ({ linkId }) => {
 
 /**
  * TODO: It needs to use Transactions
- * @param {*} param0 
+ * @param {*} param0
  */
 
 const resetPassword = async ({ password, linkId }) => {
   try {
-    const linkId2 = decodeURIComponent(linkId);
-    const link = await db.ForgotPassword.findOne({ where: { linkId: linkId2 } });
+    const linkIdDecoded = decodeURIComponent(linkId);
+    const link = await db.ForgotPassword.findOne({
+      where: { linkId: linkIdDecoded },
+    });
     if (link) {
-      const { UserId } = link ;
+      const { UserId } = link;
       link.destroy();
-      const User = await db.Users.findOne({where: { id: UserId }});
+      const User = await db.Users.findOne({ where: { id: UserId } });
       const newPass = await hashHelpers.createHash(password);
       const user = User.update({
         password: newPass,
       });
-      return (user) && {
-        status: 200,
-        message: 'Password updated'
-      };
+      return (
+        user && {
+          status: 200,
+          message: 'Password updated',
+        }
+      );
     }
     if (!link) {
       throw new ResetPasswordError();
@@ -205,7 +209,6 @@ const resetPassword = async ({ password, linkId }) => {
   } catch (e) {
     throw new ResetPasswordError(e.message);
   }
-
 };
 
 const changePassword = async ({ email, password }) => {
