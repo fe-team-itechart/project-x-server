@@ -12,19 +12,14 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const googleLogin = async data => {
-  await registration(data);
-  return jwtHelpers.generateToken(data);
-};
-
-const linkeinLogin = async data => {
-  await registration(data);
+const socialLogin = async data => {
+  registration(data);
   return jwtHelpers.generateToken(data);
 };
 
 /**
  * TODO: It needs to rebuild process of creating user Instance with Transactions
- *  https://sequelize.org/master/manual/transactions.html
+ *  https://sequelize.org/master/manual/transactions.htmlF
  */
 
 async function registration({ firstName, lastName, email, password }) {
@@ -140,7 +135,6 @@ const changePassword = async ({ email, password }) => {
 module.exports = {
   login,
   registration,
-  googleLogin,
-  linkeinLogin,
+  socialLogin,
   changePassword,
 };

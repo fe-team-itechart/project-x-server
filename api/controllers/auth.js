@@ -11,14 +11,9 @@ const login = async (req, res) => {
   res.send(response);
 };
 
-const googleLogin = async (req, res) => {
-  const response = await services.googleLogin(req.user);
-  res.redirect(process.env.CLIENT_HOST + '?tokenGoogle=' + response);
-};
-
-const linkeinLogin = async (req, res) => {
-  const response = await services.linkeinLogin(req.user);
-  res.redirect(process.env.CLIENT_HOST + '?tokenLinkedin=' + response);
+const socialLogin = async (req, res) => {
+  const response = await services.socialLogin(req.user);
+  res.redirect(process.env.CLIENT_HOST + '?token=' + response);
 };
 
 const registration = async (req, res, next) => {
@@ -66,7 +61,6 @@ const changePassword = async (req, res) => {
 module.exports = {
   login,
   registration,
-  googleLogin,
-  linkeinLogin,
+  socialLogin,
   changePassword,
 };

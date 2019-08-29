@@ -17,6 +17,7 @@ module.exports = passport => {
       },
       (accessToken, refreshToken, profile, done) => {
         const {
+          id,
           name: { givenName, familyName },
           emails,
         } = profile;

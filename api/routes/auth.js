@@ -15,14 +15,14 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/', session: false }),
-  controllers.googleLogin
+  controllers.socialLogin
 );
 
 router.get('/auth/linkedin', passport.authenticate('linkedin'));
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', { failureRedirect: '/', session: false }),
-  controllers.linkeinLogin
+  controllers.socialLogin
 );
 
 router.put('/change-password', controllers.changePassword);

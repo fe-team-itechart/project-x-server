@@ -7,7 +7,6 @@ const generateToken = ({ id, email }) => {
   return token;
 };
 
-
 module.exports = {
   generateToken,
 };

@@ -5,8 +5,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 
-const session = require('express-session')
-
 require('express-async-errors');
 
 const { auth } = require('./api/routes');
