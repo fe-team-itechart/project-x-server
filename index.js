@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 
-require('./passport')(passport);
+require('./config/passport')(passport);
 
 app.use(passport.initialize());
 

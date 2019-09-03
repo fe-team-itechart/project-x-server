@@ -1,6 +1,22 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
+const StrategyCallback = (accessToken, refreshToken, profile, done) => {
+  const {
+    id,
+    name: { givenName, familyName },
+    emails,
+  } = profile;
+  const userData = {
+    id: id,
+    email: emails[0].value,
+    firstName: givenName,
+    lastName: familyName,
+    token: accessToken,
+  };
+  done(null, userData);
+};
+
 module.exports = passport => {
   passport.serializeUser((user, done) => {
     done(null, user);
@@ -15,21 +31,7 @@ module.exports = passport => {
         clientSecret: process.env.GOOGLE_SECRET,
         callbackURL: process.env.SERVER_HOST + 'api/users/auth/google/callback',
       },
-      (accessToken, refreshToken, profile, done) => {
-        const {
-          id,
-          name: { givenName, familyName },
-          emails,
-        } = profile;
-        const userData = {
-          id: id,
-          email: emails[0].value,
-          firstName: givenName,
-          lastName: familyName,
-          token: accessToken,
-        };
-        done(null, userData);
-      }
+      StrategyCallback(accessToken, refreshToken, profile, done)
     )
   );
   passport.use(
@@ -41,21 +43,7 @@ module.exports = passport => {
           process.env.SERVER_HOST + 'api/users/auth/linkedin/callback',
         scope: ['r_liteprofile', 'r_emailaddress'],
       },
-      (accessToken, refreshToken, profile, done) => {
-        const {
-          id,
-          name: { givenName, familyName },
-          emails,
-        } = profile;
-        const userData = {
-          id: id,
-          email: emails[0].value,
-          firstName: givenName,
-          lastName: familyName,
-          token: accessToken,
-        };
-        done(null, userData);
-      }
+      StrategyCallback(accessToken, refreshToken, profile, done)
     )
   );
 };
