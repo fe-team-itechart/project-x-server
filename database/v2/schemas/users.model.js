@@ -41,8 +41,12 @@ module.exports = (sequalize, type) => {
   );
 
   MODEL.associate = models => {
-    MODEL.hasOne(models.PublicProfiles);
-    MODEL.hasOne(models.SettsProfiles);
+    MODEL.hasOne(models.PublicProfiles, {
+      foreignKey: 'id',
+    });
+    MODEL.hasOne(models.SettsProfiles, {
+      foreignKey: 'id',
+    });
     MODEL.hasMany(models.Courses, {
       foreignKey: 'creatorId',
     });
