@@ -15,7 +15,7 @@ module.exports = (sequelize, type) => {
         type: type.TEXT,
         allowNull: true,
       },
-      faceBookLink: {
+      facebookLink: {
         type: type.TEXT,
         allowNull: true,
       },

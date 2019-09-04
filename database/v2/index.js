@@ -18,8 +18,8 @@ const sequelize = new Sequelize(
   }
 );
 
-Object.keys(models).forEach(f => {
-  let model = models[f](sequelize, Sequelize);
+Object.keys(models).forEach(modelLabel => {
+  let model = models[modelLabel](sequelize, Sequelize);
   db[model.name] = model;
 });
 

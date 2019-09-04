@@ -3,7 +3,8 @@ module.exports = (sequalize, type) => {
       'UsersCourses',
       {
         id: {
-          type: type.UUID,
+          type: type.INTEGER,
+          autoIncrement: true,
           primaryKey: true,
         },
         createdAt: {

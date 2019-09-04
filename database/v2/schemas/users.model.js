@@ -10,7 +10,8 @@ module.exports = (sequalize, type) => {
         type: type.STRING(100),
       },
       id: {
-        type: type.UUID,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
       },
       firstName: {
