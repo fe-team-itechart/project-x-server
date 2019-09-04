@@ -1,7 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
-const StrategyCallback = (accessToken, refreshToken, profile, done) => {
+const strategyCallback = (accessToken, refreshToken, profile, done) => {
   const {
     id,
     name: { givenName, familyName },
@@ -12,7 +12,6 @@ const StrategyCallback = (accessToken, refreshToken, profile, done) => {
     email: emails[0].value,
     firstName: givenName,
     lastName: familyName,
-    token: accessToken,
   };
   done(null, userData);
 };
@@ -31,7 +30,9 @@ module.exports = passport => {
         clientSecret: process.env.GOOGLE_SECRET,
         callbackURL: process.env.SERVER_HOST + 'api/users/auth/google/callback',
       },
-      StrategyCallback(accessToken, refreshToken, profile, done)
+      (accessToken, refreshToken, profile, done) => {
+        strategyCallback(accessToken, refreshToken, profile, done);
+      }
     )
   );
   passport.use(
@@ -43,7 +44,9 @@ module.exports = passport => {
           process.env.SERVER_HOST + 'api/users/auth/linkedin/callback',
         scope: ['r_liteprofile', 'r_emailaddress'],
       },
-      StrategyCallback(accessToken, refreshToken, profile, done)
+      (accessToken, refreshToken, profile, done) => {
+        strategyCallback(accessToken, refreshToken, profile, done);
+      }
     )
   );
 };

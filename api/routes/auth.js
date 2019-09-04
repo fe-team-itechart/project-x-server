@@ -5,9 +5,7 @@ const passport = require('passport');
 
 router.post('/login', controllers.login);
 router.post('/registration', controllers.registration);
-router.get('/linkedin/auth', (req, res) => {
-  res.send(req.body);
-});
+
 router.get(
   '/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })

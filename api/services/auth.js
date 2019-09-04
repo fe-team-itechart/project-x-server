@@ -51,7 +51,7 @@ async function registration({ firstName, lastName, email, password }) {
         if (created) {
           userId = user.id;
         }
-      });
+      })
     }
     let PublicProfileId = null;
     if (userId) {
