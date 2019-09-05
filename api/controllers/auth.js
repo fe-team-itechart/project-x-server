@@ -18,6 +18,11 @@ const login = async (req, res) => {
   res.send(response);
 };
 
+const socialLogin = async (req, res) => {
+  const response = await services.socialLogin(req.user);
+  res.redirect(process.env.CLIENT_HOST + '?token=' + response);
+};
+
 const registration = async (req, res, next) => {
   try {
     const errors = validateAuth(req.body);
@@ -124,5 +129,6 @@ module.exports = {
   resetApprovementPassword,
   resetPassword,
   googleLogin,
+  socialLogin,
   changePassword,
 };

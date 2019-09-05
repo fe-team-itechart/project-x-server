@@ -1,7 +1,9 @@
 require('dotenv').config();
-const cors = require('cors')
+
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 require('express-async-errors');
 
@@ -13,6 +15,10 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors());
+
+require('./config/passport')(passport);
+
+app.use(passport.initialize());
 
 app.use(bodyParser.json());
 app.use(express.json());

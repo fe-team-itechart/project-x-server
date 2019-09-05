@@ -20,24 +20,18 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const googleLogin = async data => {
-  const payload = {
-    firstName: data.payload.profileObj.givenName,
-    lastName: data.payload.profileObj.familyName,
-    email: data.payload.profileObj.email,
-    token: data.payload.Zi.id_token,
-  };
-  registration(payload);
-  return jwtHelpers.generateToken(payload);
+const socialLogin = async data => {
+  registration(data);
+  return jwtHelpers.generateToken(data);
 };
+
 /**
  * TODO: It needs to rebuild process of creating user Instance with Transactions
- *  https://sequelize.org/master/manual/transactions.html
+ *  https://sequelize.org/master/manual/transactions.htmlF
  */
 
-async function registration({ firstName, lastName, email, password, token }) {
+async function registration({ firstName, lastName, email, password }) {
   let newPass;
-
   return new Promise(async (resolve, reject) => {
     let userId = null;
     if (password) {
@@ -59,14 +53,13 @@ async function registration({ firstName, lastName, email, password, token }) {
     } else {
       await db.Users.findOrCreate({
         where: {
-          token,
           email,
         },
       }).then(([user, created]) => {
         if (created) {
           userId = user.id;
         }
-      });
+      })
     }
     let PublicProfileId = null;
     if (userId) {
@@ -229,5 +222,6 @@ module.exports = {
   resetPasswordApprove,
   resetPassword,
   googleLogin,
+  socialLogin,
   changePassword,
 };
