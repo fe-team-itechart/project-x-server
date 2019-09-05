@@ -15,11 +15,6 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const socialLogin = async data => {
-  registration(data);
-  return jwtHelpers.generateToken(data);
-};
-
 const registration = async ({ firstName, lastName, email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
   if (user) {
@@ -80,6 +75,5 @@ const changePassword = async ({ email, password }) => {
 module.exports = {
   login,
   registration,
-  socialLogin,
   changePassword,
 };
