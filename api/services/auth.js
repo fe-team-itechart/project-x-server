@@ -13,121 +13,62 @@ const HOST = process.env.CL_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw new errors.UserNotFoundError();
+  if (!user) {
+    throw new errors.UserNotFoundError();
+  }
+
   if (!hashHelpers.validPassword(password, user.password)) {
     throw new errors.WrongPasswordError();
   }
+
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const socialLogin = async data => {
-  registration(data);
-  return jwtHelpers.generateToken(data);
-};
+const registration = async ({ firstName, lastName, email, password }) => {
+  const user = await db.Users.findOne({ where: { email } });
+  if (user) {
+    throw new errors.UserAlreadyExistsError();
+  }
 
-/**
- * TODO: It needs to rebuild process of creating user Instance with Transactions
- *  https://sequelize.org/master/manual/transactions.htmlF
- */
+  const transaction = await db.sequelize.transaction();
 
-async function registration({ firstName, lastName, email, password }) {
-  let newPass;
-  return new Promise(async (resolve, reject) => {
-    let userId = null;
+  try {
     if (password) {
-      newPass = await hashHelpers.createHash(password);
-      await db.Users.findOrCreate({
-        where: {
-          email,
-        },
-        defaults: {
-          password: newPass,
-        },
-      }).then(([user, created]) => {
-        if (created) {
-          userId = user.id;
-        } else {
-          reject(`Already exist ${user.email}`);
-        }
-      });
+      const hashedPassword = await hashHelpers.createHash(password);
+      const newUser = {
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+      };
+      createdUser = await db.Users.create(newUser, { transaction });
     } else {
-      await db.Users.findOrCreate({
-        where: {
-          email,
-        },
-      }).then(([user, created]) => {
-        if (created) {
-          userId = user.id;
-        }
-      })
+      const socialUser = {
+        email,
+        password: null,
+      };
+      createdUser = await db.Users.create(socialUser, { transaction });
     }
-    let PublicProfileId = null;
-    if (userId) {
-      await db.PublicProfiles.findOrCreate({
-        where: {
-          id: userId,
-        },
-        defaults: {
-          firstName,
-          lastName,
-        },
-      })
-        .then(([profile, created]) => {
-          PublicProfileId = profile.id;
-          ErrorHandler(profile);
-        })
-        .catch(e => ErrorHandler(e, { show: false }));
+    const createdUserId = createdUser.dataValues.id;
 
-      let AccountProfileId = null;
-      await db.AccountProfiles.findOrCreate({
-        where: {
-          id: userId,
-        },
-        defaults: {
-          info: {},
-        },
-      })
-        .then(([profile, created]) => {
-          AccountProfileId = created ? profile.id : null;
-          ErrorHandler(profile);
-        })
-        .catch(e => ErrorHandler(e, { show: true }));
+    const newProfile = await db.PublicProfiles.create(
+      { id: createdUserId },
+      { transaction }
+    );
 
-      let SettingsProfileId = null;
-      await db.SettingsProfiles.findOrCreate({
-        where: {
-          id: userId,
-        },
-        defaults: {
-          localization: 'ru',
-          secureSetts: {},
-        },
-      })
-        .then(([profile, created]) => {
-          SettingsProfileId = created ? profile.id : null;
-          ErrorHandler(profile);
-        })
-        .catch(e => ErrorHandler(e, { show: true }));
-      if (userId && PublicProfileId && AccountProfileId && SettingsProfileId) {
-        await db.Profiles.findOrCreate({
-          where: {
-            userId,
-            PublicProfileId,
-            AccountProfileId,
-            SettingsProfileId,
-          },
-        })
-          .then(([profile, created]) => {
-            resolve(profile);
-            ErrorHandler(profile);
-          })
-          .catch(e => ErrorHandler(e, { show: true }));
-      } else {
-        resolve({});
-      }
-    }
-  });
-}
+    const newSettings = await db.SettsProfiles.create(
+      { id: createdUserId },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return jwtHelpers.generateToken({ id: createdUserId, email });
+  } catch (err) {
+    await transaction.rollback();
+    throw new errors.RegistrationFailedError();
+  }
+};
 
 /**
  * TODO: It needs to think about creating link for reset password
