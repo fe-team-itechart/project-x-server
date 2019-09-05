@@ -10,18 +10,22 @@ module.exports = (sequelize, type) => {
       twitterLink: {
         type: type.TEXT,
         allowNull: true,
+        defaultValue: ''
       },
       linkedInLink: {
         type: type.TEXT,
         allowNull: true,
+        defaultValue: ''
       },
       facebookLink: {
         type: type.TEXT,
         allowNull: true,
+        defaultValue: ''
       },
       description: {
         type: type.TEXT,
         allowNull: true,
+        defaultValue: ''
       },
       createdAt: {
         type: type.DATE,

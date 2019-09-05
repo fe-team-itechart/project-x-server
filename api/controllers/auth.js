@@ -12,41 +12,18 @@ const login = async (req, res) => {
 };
 
 const socialLogin = async (req, res) => {
-  const response = await services.socialLogin(req.user);
+  const response = await services.registration(req.user);
   res.redirect(process.env.CLIENT_HOST + '?token=' + response);
 };
 
-const registration = async (req, res, next) => {
-  try {
-    const errors = validateAuth(req.body);
-
-    if (!isEmpty(errors)) {
-      return res.status(400).json(errors);
-    }
-
-    await services
-      .registration(req.body)
-      .then(async () => {
-        const { password, passwordConfirm, email, ...results } = req.body;
-        const { token } = await services.login({
-          email,
-          password,
-        });
-        const response = {
-          status: '201',
-          message: 'User is created',
-          user: {
-            email,
-            ...results,
-          },
-          token,
-        };
-        res.status(201).send(response);
-      })
-      .catch(err => next(err.toString()));
-  } catch (err) {
-    next(err.toString());
+const registration = async (req, res) => {
+  const errors = validateAuth(req.body)
+  if(!isEmpty(errors)) {
+    return res.status(400).json(errors)
   }
+
+  const response = await services.registration(req.body)
+  res.send(response)
 };
 
 const changePassword = async (req, res) => {
