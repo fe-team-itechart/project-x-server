@@ -32,7 +32,6 @@ const registration = async ({ firstName, lastName, email, password }) => {
     if (password) {
       const hashedPassword = await hashHelpers.createHash(password);
       const newUser = {
-        id: 'dasd',
         email,
         password: hashedPassword,
         firstName,
