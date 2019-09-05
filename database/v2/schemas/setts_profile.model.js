@@ -10,6 +10,7 @@ module.exports = (sequelize, type) => {
       localization: {
         type: type.ENUM('ru', 'en'),
         allowNull: false,
+        defaultValue: 'ru'
       },
       createdAt: {
         type: type.DATE,

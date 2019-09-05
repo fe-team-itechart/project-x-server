@@ -13,6 +13,7 @@ module.exports = (sequalize, type) => {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       firstName: {
         type: type.STRING(20),
@@ -25,6 +26,7 @@ module.exports = (sequalize, type) => {
       role: {
         type: type.ENUM('Admin', 'Mentor', 'User'),
         allowNull: false,
+        defaultValue: 'User'
       },
       createdAt: {
         type: type.DATE,

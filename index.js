@@ -25,10 +25,6 @@ app.use(express.json());
 
 app.use('/api/users/', auth);
 
-/**
- * TODO:  Rewrite processing of errors from login and registration routers
- */
-
 app.use(errorHandlerMiddleware);
 
 app.listen(PORT, function() {
