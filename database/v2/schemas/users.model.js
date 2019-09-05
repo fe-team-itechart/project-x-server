@@ -17,11 +17,11 @@ module.exports = (sequalize, type) => {
       },
       firstName: {
         type: type.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       lastName: {
         type: type.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       role: {
         type: type.ENUM('Admin', 'Mentor', 'User'),
