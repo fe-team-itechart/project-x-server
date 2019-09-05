@@ -11,6 +11,11 @@ const login = async (req, res) => {
   res.send(response);
 };
 
+const socialLogin = async (req, res) => {
+  const response = await services.socialLogin(req.user);
+  res.redirect(process.env.CLIENT_HOST + '?token=' + response);
+};
+
 const registration = async (req, res, next) => {
   try {
     const errors = validateAuth(req.body);
@@ -44,11 +49,6 @@ const registration = async (req, res, next) => {
   }
 };
 
-const googleLogin = async (req, res) => {
-  const response = await services.googleLogin(req.body);
-  res.send(response);
-};
-
 const changePassword = async (req, res) => {
   const errors = validateAuth(req.body);
   if (!isEmpty(errors)) {
@@ -61,6 +61,6 @@ const changePassword = async (req, res) => {
 module.exports = {
   login,
   registration,
-  googleLogin,
+  socialLogin,
   changePassword,
 };
