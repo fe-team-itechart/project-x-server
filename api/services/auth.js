@@ -26,14 +26,13 @@ const registration = async ({ firstName, lastName, email, password }) => {
     throw new errors.UserAlreadyExistsError();
   }
 
-  let transaction;
-  try {
-    transaction = await db.sequelize.transaction();
+  const transaction = await db.sequelize.transaction();
 
-    let createdUser;
+  try {
     if (password) {
       const hashedPassword = await hashHelpers.createHash(password);
       const newUser = {
+        id: 'dasd',
         email,
         password: hashedPassword,
         firstName,
