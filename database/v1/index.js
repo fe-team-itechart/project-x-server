@@ -32,4 +32,8 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.sequelize.sync({ force: false }).then(data => {
+  console.log('DONE V1');
+});
+
 module.exports = db;

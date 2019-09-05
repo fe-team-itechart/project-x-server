@@ -9,6 +9,7 @@ const ErrorHandler = (error, options) => {
 };
 
 const errorHandlerMiddleware = (error, req, res, next) => {
+  console.log(error);
   res.status(error.status).json({ name: error.name, status: error.status, message: error.message });
 };
 

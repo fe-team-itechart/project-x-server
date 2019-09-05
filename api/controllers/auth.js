@@ -3,16 +3,16 @@ const {
   loginSchema,
   registrationSchema,
   emailSchema,
-  passwordSchema,
+  passwordsSchema,
   validateAuth,
 } = require('../validation/auth');
 const { isEmpty } = require('lodash');
 const errors = require('../services/errorHandlers');
 
 const login = async (req, res) => {
-  const errors = validateAuth(req.body);
-  if (!isEmpty(errors)) {
-    return res.status(400).json(errors);
+  const errorsValidation = validateAuth(req.body);
+  if (!isEmpty(errorsValidation)) {
+    return res.status(400).json(errorsValidation);
   }
   const response = await services.login(req.body);
   res.send(response);
@@ -25,10 +25,10 @@ const socialLogin = async (req, res) => {
 
 const registration = async (req, res, next) => {
   try {
-    const errors = validateAuth(req.body);
+    const errorsValidation = validateAuth(req.body);
 
-    if (!isEmpty(errors)) {
-      return res.status(400).json(errors);
+    if (!isEmpty(errorsValidation)) {
+      return res.status(400).json(errorsValidation);
     }
 
     await services
@@ -96,7 +96,7 @@ const resetPassword = async (req, res) => {
     throw new errors.ResetPasswordError('Empty params');
   }
   try {
-    const validation = await passwordSchema.validate({
+    const validation = await passwordsSchema.validate({
       password,
       passwordConfirm,
     });

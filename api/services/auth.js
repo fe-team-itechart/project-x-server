@@ -221,7 +221,6 @@ module.exports = {
   resetPasswordRequest,
   resetPasswordApprove,
   resetPassword,
-  googleLogin,
   socialLogin,
   changePassword,
 };
