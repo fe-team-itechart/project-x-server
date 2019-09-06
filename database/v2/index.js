@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       ssl: true,
     },
-    logging: true,
+    logging: false,
   }
 );
 
@@ -31,7 +31,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-db.sequelize.sync({ force: true }).then(data => {
+db.sequelize.sync({ force: false }).then(() => {
   console.log('DONE');
 });
 
