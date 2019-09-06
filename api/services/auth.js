@@ -1,14 +1,12 @@
 const nodemailer = require('nodemailer');
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const { ErrorHandler } = require('../middlewares/errorHandler');
-const {
-  ResetPasswordError,
-} = require('./errorHandlers/index');
+const { ResetPasswordError } = require('./errorHandlers/index');
 
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
 
-const HOST = process.env.CL_HOST || 'http://localhost:3000';
+const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
@@ -84,12 +82,11 @@ const resetPasswordRequest = async ({ email }) => {
         defaults: { UserId: user.id },
       });
       linkId = encodeURIComponent(linkId);
-      const info =
-        (await emailHelpers.sendEmail(
-          email,
-          `Follow link ${HOST}/reset?id=${linkId}`,
-          `${HOST}/reset?id=${linkId}`
-        ));
+      const info = await emailHelpers.sendEmail(
+        email,
+        `Follow link ${HOST}/reset?id=${linkId}`,
+        `${HOST}/reset?id=${linkId}`
+      );
       console.log(nodemailer.getTestMessageUrl(info), ' ');
       return info;
     }

@@ -85,11 +85,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const googleLogin = async (req, res) => {
-  const response = await services.googleLogin(req.body);
-  res.send(response);
-};
-
 const changePassword = async (req, res) => {
   const errors = validateAuth(req.body);
   if (!isEmpty(errors)) {
@@ -105,7 +100,6 @@ module.exports = {
   reset,
   resetApprovementPassword,
   resetPassword,
-  googleLogin,
   socialLogin,
   changePassword,
 };
