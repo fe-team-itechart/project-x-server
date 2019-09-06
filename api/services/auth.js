@@ -8,11 +8,20 @@ const login = async ({ email, password }) => {
     throw new errors.UserNotFoundError();
   }
 
-  if (!hashHelpers.validPassword(password, user.password)) {
+  if (password && !hashHelpers.validPassword(password, user.password)) {
     throw new errors.WrongPasswordError();
   }
 
   return jwtHelpers.generateToken(user.dataValues);
+};
+
+const socialLogin = async ({ firstName, lastName, email, password }) => {
+  const user = await db.Users.findOne({ where: { email } });
+  if (user) {
+    return login({ email, password });
+  } else {
+    return registration({ firstName, lastName, email, password });
+  }
 };
 
 const registration = async ({ firstName, lastName, email, password }) => {
@@ -74,6 +83,7 @@ const changePassword = async ({ email, password }) => {
 
 module.exports = {
   login,
+  socialLogin,
   registration,
   changePassword,
 };
