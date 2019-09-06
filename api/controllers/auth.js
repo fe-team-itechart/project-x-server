@@ -24,13 +24,13 @@ const socialLogin = async (req, res) => {
 };
 
 const registration = async (req, res) => {
-  const errors = validateAuth(req.body)
-  if(!isEmpty(errors)) {
-    return res.status(400).json(errors)
+  const errors = validateAuth(req.body);
+  if (!isEmpty(errors)) {
+    return res.status(400).json(errors);
   }
 
-  const response = await services.registration(req.body)
-  res.send(response)
+  const response = await services.registration(req.body);
+  res.status(201).send(response);
 };
 
 const reset = async (req, res) => {

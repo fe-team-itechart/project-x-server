@@ -1,3 +1,3 @@
-const db = require('./v1');
+const db = require('./v2');
 
 module.exports = db;
