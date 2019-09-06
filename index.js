@@ -4,6 +4,9 @@ const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./docs.yaml');
 
 require('express-async-errors');
 
@@ -24,6 +27,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 app.use('/api/users/', auth);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 /**
  * TODO:  Rewrite processing of errors from login and registration routers
