@@ -19,8 +19,8 @@ const login = async (req, res) => {
 };
 
 const socialLogin = async (req, res) => {
-  const response = await services.registration(req.user);
-  res.redirect(process.env.CLIENT_HOST + '?token=' + response);
+  const { token } = await services.socialLogin(req.user);
+  res.redirect(process.env.CLIENT_HOST + '?token=' + token);
 };
 
 const registration = async (req, res) => {
