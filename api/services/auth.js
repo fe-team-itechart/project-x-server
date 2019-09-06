@@ -71,13 +71,17 @@ const registration = async ({ firstName, lastName, email, password }) => {
 };
 
 const changePassword = async ({ email, password }) => {
-  const newPassword = await hashHelpers.createHash(password);
   const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  if (!user) {
+    throw new errors.UserNotFoundError();
+  }
+
+  const newPassword = await hashHelpers.createHash(password);
   await db.Users.update(
     { password: newPassword },
     { returning: true, where: { email } }
   );
+
   return user;
 };
 
