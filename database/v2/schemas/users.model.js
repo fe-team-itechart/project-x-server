@@ -13,18 +13,20 @@ module.exports = (sequalize, type) => {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       firstName: {
         type: type.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       lastName: {
         type: type.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       role: {
         type: type.ENUM('Admin', 'Mentor', 'User'),
         allowNull: false,
+        defaultValue: 'User'
       },
       createdAt: {
         type: type.DATE,

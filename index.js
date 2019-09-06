@@ -29,10 +29,6 @@ app.use(express.json());
 app.use('/api/users/', auth);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-/**
- * TODO:  Rewrite processing of errors from login and registration routers
- */
-
 app.use(errorHandlerMiddleware);
 
 app.listen(PORT, function() {

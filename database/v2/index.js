@@ -1,6 +1,5 @@
 const models = require('./schemas');
 const Sequelize = require('sequelize');
-const { ErrorHandler } = require('../../api/middlewares/errorHandler');
 
 const db = {};
 
