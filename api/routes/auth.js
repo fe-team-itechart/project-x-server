@@ -23,5 +23,12 @@ router.get(
   controllers.socialLogin
 );
 
+router.post('/reset', controllers.reset);
+
+router.post('/reset/:linkId', controllers.resetApprovementPassword);
+
+router.post('/reset-password', controllers.resetPassword);
+
 router.put('/change-password', controllers.changePassword);
+
 module.exports = router;
