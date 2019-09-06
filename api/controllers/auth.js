@@ -24,9 +24,9 @@ const socialLogin = async (req, res) => {
 };
 
 const registration = async (req, res) => {
-  const errors = validateAuth(req.body);
-  if (!isEmpty(errors)) {
-    return res.status(400).json(errors);
+  const errorsValidation = validateAuth(req.body);
+  if (!isEmpty(errorsValidation)) {
+    return res.status(400).json(errorsValidation);
   }
 
   const response = await services.registration(req.body);
@@ -43,7 +43,7 @@ const reset = async (req, res) => {
     const response = answer.messageId ? 'Mail was sent' : answer.message;
     res.status(status).send(response);
   } catch (e) {
-    throw new errors.ResetPasswordRequestError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
@@ -63,7 +63,7 @@ const resetApprovementPassword = async (req, res) => {
       });
     }
   } catch (e) {
-    throw new error.ResetPasswordApproveError(e.message);
+    throw new error.ResetPasswordError(e.message);
   }
 };
 
