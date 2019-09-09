@@ -1,8 +1,6 @@
 const nodemailer = require('nodemailer');
-const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
-const { ErrorHandler } = require('../middlewares/errorHandler');
-const { ResetPasswordError } = require('./errorHandlers/index');
 
+const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
 
@@ -101,7 +99,7 @@ const resetPasswordRequest = async ({ email }) => {
     }
     throw new errors.UserNotFoundError();
   } catch (e) {
-    throw new ResetPasswordError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
@@ -110,7 +108,7 @@ const resetPasswordApprove = async ({ linkId }) => {
     const { UserId } = await db.ForgotPassword.findOne({ where: { linkId } });
     return UserId;
   } catch (e) {
-    throw new ResetPasswordError();
+    throw new errors.ResetPasswordError();
   }
 };
 
@@ -140,9 +138,9 @@ const resetPassword = async ({ password, linkId }) => {
         }
       );
     }
-    throw new ResetPasswordError();
+    throw new errors.ResetPasswordError();
   } catch (e) {
-    throw new ResetPasswordError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
