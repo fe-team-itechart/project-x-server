@@ -38,6 +38,10 @@ const validateAuth = ({
   });
 
   const passwordConfirmSchema = Joi.object().keys({
+    password: Joi.string()
+      .required()
+      .min(8)
+      .max(32),
     passwordConfirm: Joi.ref('password'),
   });
 
@@ -51,8 +55,23 @@ const validateAuth = ({
     password !== undefined ? Joi.validate({ password }, passwordSchema) : '';
   const passwordConfirmValidate =
     passwordConfirm !== undefined
-      ? Joi.validate({ passwordConfirm }, passwordConfirmSchema)
+      ? Joi.validate({ password, passwordConfirm }, passwordConfirmSchema)
       : '';
+
+  const errorsValidate = {
+    firstNameValidate,
+    lastNameValidate,
+    emailValidate,
+    passwordValidate,
+    passwordConfirmValidate,
+  };
+
+  Object.keys(errorsValidate).forEach(key => {
+    if (errorsValidate[key] === '') {
+      const newKey = key.replace('Validate', '');
+      errors[newKey] = 'Missed ' + newKey;
+    }
+  });
 
   if (firstNameValidate.error) {
     errors.firstName = firstNameValidate.error.details[0].message.replace(
@@ -91,6 +110,38 @@ const validateAuth = ({
   return errors;
 };
 
+const schemas = {
+  firstName: Joi.string()
+    .min(1)
+    .max(20),
+  lastName: Joi.string()
+    .min(1)
+    .max(20),
+  email: Joi.string()
+    .max(255)
+    .email({ minDomainSegments: 2 })
+    .required(),
+  password: Joi.string()
+    .min(8)
+    .max(32)
+    .regex(/(?=.*[0-9])(?=.*[!@#$%^&*?])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/)
+    .required(),
+  passwordConfirm: Joi.ref('password'),
+};
+
+const registrationSchema = Joi.object().keys(schemas);
+const loginSchema = Joi.object()
+  .keys(schemas)
+  .optionalKeys('firstName', 'lastName', 'passwordConfirm');
+const emailSchema = loginSchema.optionalKeys('password');
+const passwordsSchema = Joi.object()
+  .keys(schemas)
+  .optionalKeys('firstName', 'lastName', 'email');
+
 module.exports = {
+  loginSchema,
+  registrationSchema,
+  emailSchema,
+  passwordsSchema,
   validateAuth,
 };
