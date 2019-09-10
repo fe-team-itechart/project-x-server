@@ -3,10 +3,11 @@ const services = require('../services/auth');
 const {
   loginValidate,
   registerValidate,
-  changePasswordValidate,
+  passwordSchema,
 } = require('../validation/auth');
 
 const { isEmpty } = require('lodash');
+const errors = require('../services/errorHandlers');
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -84,16 +85,20 @@ const resetApprovementPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { linkId, password, passwordConfirm } = req.body;
+
   if (!linkId || !password || !passwordConfirm) {
     throw new errors.ResetPasswordError('Empty params');
   }
+
   try {
     const validation = await passwordsSchema.validate({
       password,
       passwordConfirm,
     });
+
     const answer =
       validation && (await services.resetPassword({ password, linkId }));
+
     res.status(200).send(answer);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
@@ -101,15 +106,16 @@ const resetPassword = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  const { password } = req.body;
+  const { userId } = req.params;
 
-  const errors = changePasswordValidate(email, password, confirmPassword);
+  const { error } = passwordSchema.validate(password);
 
-  if (!isEmpty(errors)) {
-    return res.status(400).json(errors);
+  if (!isEmpty(error)) {
+    return res.status(400).json(error.message);
   }
 
-  const response = await services.changePassword(req.body);
+  const response = await services.changePassword({ userId, password });
   res.send(response);
 };
 
@@ -120,5 +126,6 @@ module.exports = {
   reset,
   resetApprovementPassword,
   resetPassword,
+  socialLogin,
   changePassword,
 };

@@ -146,14 +146,17 @@ const resetPassword = async ({ password, linkId }) => {
   }
 };
 
-const changePassword = async ({ email, password }) => {
+const changePassword = async ({ userId, password }) => {
   const newPassword = await hashHelpers.createHash(password);
-  const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  const user = await db.Users.findByPk(userId);
+
+  if (!user) throw new errors.UserNotFoundError();
+
   await db.Users.update(
     { password: newPassword },
-    { returning: true, where: { email } }
+    { returning: true, where: { id: userId } }
   );
+
   return user;
 };
 

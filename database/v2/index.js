@@ -1,0 +1,38 @@
+const models = require('./schemas');
+const Sequelize = require('sequelize');
+
+const db = {};
+
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    host: process.env.DB_HOST,
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: true,
+    },
+    logging: false,
+  }
+);
+
+Object.keys(models).forEach(modelLabel => {
+  let model = models[modelLabel](sequelize, Sequelize);
+  db[model.name] = model;
+});
+
+Object.keys(db).forEach(modelName => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+db.sequelize.sync({ force: false }).then(data => {
+  console.log('DONE');
+});
+
+module.exports = db;

@@ -102,39 +102,38 @@ const registerValidate = (
   return errors;
 };
 
-const changePasswordValidate = (email, password, confirmPassword) => {
-  let errors = {};
+// const changePasswordValidate = (email, password, confirmPassword) => {
+//   let errors = {};
 
-  const emailValidate = Joi.validate(email, emailSchema);
-  const passwordValidate = Joi.validate(
-    { password, confirmPassword },
-    passwordConfirmSchema
-  );
+//   const emailValidate = Joi.validate(email, emailSchema);
+//   const passwordValidate = Joi.validate(
+//     { password, confirmPassword },
+//     passwordConfirmSchema
+//   );
 
-  if (emailValidate.error) {
-    errors.email = emailValidate.error.details[0].message.replace(
-      '"value"',
-      'Email'
-    );
-  }
+//   if (emailValidate.error) {
+//     errors.email = emailValidate.error.details[0].message.replace(
+//       '"value"',
+//       'Email'
+//     );
+//   }
 
-  if (passwordValidate.error) {
-    errors.password = passwordValidate.error.details[0].message.replace(
-      '"password"',
-      'Password'
-    );
-  }
+//   if (passwordValidate.error) {
+//     errors.password = passwordValidate.error.details[0].message.replace(
+//       '"password"',
+//       'Password'
+//     );
+//   }
 
-  return errors;
-};
+//   return errors;
+// };
 
 module.exports = {
   loginValidate,
   registerValidate,
-  changePasswordValidate,
   firstNameSchema,
   lastNameSchema,
   emailSchema,
   passwordSchema,
-  passwordConfirmSchema
+  passwordConfirmSchema,
 };
