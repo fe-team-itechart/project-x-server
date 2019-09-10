@@ -78,7 +78,6 @@ const resetApprovementPassword = async (req, res) => {
         message: { content: 'Enter New Password', userId },
       });
     }
-
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
   }
@@ -116,7 +115,7 @@ const changePassword = async (req, res) => {
     return res.status(400).json(error.message);
   }
 
-  const response = await services.changePassword({ userId, password });
+  const response = await services.changePassword(userId, password);
   res.send(response);
 };
 
