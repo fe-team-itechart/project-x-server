@@ -1,76 +1,79 @@
 const Joi = require('@hapi/joi');
 
-const validateAuth = ({
+const firstNameSchema = Joi.string()
+  .min(2)
+  .max(20)
+  .required();
+
+const lastNameSchema = Joi.string()
+  .required()
+  .min(2)
+  .max(20);
+
+const emailSchema = Joi.string()
+  .required()
+  .email()
+  .max(64);
+
+const passwordSchema = Joi.string()
+  .required()
+  .min(8)
+  .max(32);
+
+const passwordConfirmSchema = Joi.object().keys({
+  password: Joi.string()
+    .required()
+    .min(8)
+    .max(32),
+  confirmPassword: Joi.any()
+    .valid(Joi.ref('password'))
+    .required()
+    .options({ language: { any: { allowOnly: '!!Passwords do not match' } } }),
+});
+
+const loginValidate = (email, password) => {
+  let errors = {};
+
+  const emailValidate = Joi.validate(email, emailSchema);
+  const passwordValidate = Joi.validate(password, passwordSchema);
+
+  if (emailValidate.error) {
+    errors.email = emailValidate.error.details[0].message.replace(
+      '"value"',
+      'Email'
+    );
+  }
+
+  if (passwordValidate.error) {
+    errors.password = passwordValidate.error.details[0].message.replace(
+      '"value"',
+      'Password'
+    );
+  }
+
+  return errors;
+};
+
+const registerValidate = (
   firstName,
   lastName,
   email,
   password,
-  passwordConfirm,
-}) => {
+  confirmPassword
+) => {
   let errors = {};
 
-  const firstNameSchema = Joi.object().keys({
-    firstName: Joi.string()
-      .min(2)
-      .max(20)
-      .required(),
-  });
-
-  const lastNameSchema = Joi.object().keys({
-    lastName: Joi.string()
-      .required()
-      .min(2)
-      .max(20),
-  });
-
-  const emailSchema = Joi.object().keys({
-    email: Joi.string()
-      .required()
-      .email()
-      .max(64),
-  });
-
-  const passwordSchema = Joi.object().keys({
-    password: Joi.string()
-      .required()
-      .min(8)
-      .max(32),
-  });
-
-  const passwordConfirmSchema = Joi.object().keys({
-    passwordConfirm: Joi.ref('password'),
-  });
-
-  const firstNameValidate =
-    firstName !== undefined ? Joi.validate({ firstName }, firstNameSchema) : '';
-  const lastNameValidate =
-    lastName !== undefined ? Joi.validate({ lastName }, lastNameSchema) : '';
-  const emailValidate =
-    email !== undefined ? Joi.validate({ email }, emailSchema) : '';
-  const passwordValidate =
-    password !== undefined ? Joi.validate({ password }, passwordSchema) : '';
-  const passwordConfirmValidate =
-    passwordConfirm !== undefined
-      ? Joi.validate({ passwordConfirm }, passwordConfirmSchema)
-      : '';
-
-  if (firstNameValidate.error) {
-    errors.firstName = firstNameValidate.error.details[0].message.replace(
-      '"firstName"',
-      'First name'
-    );
-  }
-
-  if (lastNameValidate.error) {
-    errors.lastName = lastNameValidate.error.details[0].message.replace(
-      '"lastName"',
-      'Last Name'
-    );
-  }
+  const firstNameValidate = Joi.validate(firstName, firstNameSchema);
+  const lastNameValidate = Joi.validate(lastName, lastNameSchema);
+  const emailValidate = Joi.validate(email, emailSchema);
+  const passwordValidate = Joi.validate(
+    { password, confirmPassword },
+    passwordConfirmSchema
+  );
 
   if (emailValidate.error) {
     errors.email = emailValidate.error.details[0].message.replace(
-      '"email"',
+      '"value"',
       'Email'
     );
   }
@@ -82,15 +85,56 @@ const validateAuth = ({
     );
   }
 
-  if (passwordConfirmValidate.error) {
-    errors.passwordConfirm = passwordConfirmValidate.error.details[0].message.replace(
-      '"passwordConfirm"',
-      'Password Confirm'
+  if (firstNameValidate.error) {
+    errors.firstName = firstNameValidate.error.details[0].message.replace(
+      '"value"',
+      'First name'
     );
   }
+
+  if (lastNameValidate.error) {
+    errors.lastName = lastNameValidate.error.details[0].message.replace(
+      '"value"',
+      'Last name'
+    );
+  }
+
+  return errors;
+};
+
+const changePasswordValidate = (email, password, confirmPassword) => {
+  let errors = {};
+
+  const emailValidate = Joi.validate(email, emailSchema);
+  const passwordValidate = Joi.validate(
+    { password, confirmPassword },
+    passwordConfirmSchema
+  );
+
+  if (emailValidate.error) {
+    errors.email = emailValidate.error.details[0].message.replace(
+      '"value"',
+      'Email'
+    );
+  }
+
+  if (passwordValidate.error) {
+    errors.password = passwordValidate.error.details[0].message.replace(
+      '"password"',
+      'Password'
+    );
+  }
+
   return errors;
 };
 
 module.exports = {
-  validateAuth,
+  loginValidate,
+  registerValidate,
+  changePasswordValidate,
+  firstNameSchema,
+  lastNameSchema,
+  emailSchema,
+  passwordSchema,
+  passwordConfirmSchema
 };
