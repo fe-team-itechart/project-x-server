@@ -65,7 +65,7 @@ const resetApprovementPassword = async (req, res) => {
     const { linkId } = req.params;
 
     if (!linkId) {
-      throw new error.ResetPasswordApproveError('Empty params');
+      throw new errors.ResetPasswordApproveError('Empty params');
     }
 
     const userId = await services.resetPasswordApprove({
@@ -78,8 +78,9 @@ const resetApprovementPassword = async (req, res) => {
         message: { content: 'Enter New Password', userId },
       });
     }
+
   } catch (e) {
-    throw new error.ResetPasswordError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
