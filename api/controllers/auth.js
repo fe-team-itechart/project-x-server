@@ -91,6 +91,7 @@ const changePassword = async (req, res) => {
   if (!isEmpty(errors)) {
     return res.status(400).json(errors);
   }
+
   const response = await services.changePassword(req.body);
   res.send(response);
 };

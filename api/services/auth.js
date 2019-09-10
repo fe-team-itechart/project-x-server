@@ -1,8 +1,6 @@
 const nodemailer = require('nodemailer');
-const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
-const { ErrorHandler } = require('../middlewares/errorHandler');
-const { ResetPasswordError } = require('./errorHandlers/index');
 
+const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
 
@@ -101,7 +99,7 @@ const resetPasswordRequest = async ({ email }) => {
     }
     throw new errors.UserNotFoundError();
   } catch (e) {
-    throw new ResetPasswordError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
@@ -110,7 +108,7 @@ const resetPasswordApprove = async ({ linkId }) => {
     const { UserId } = await db.ForgotPassword.findOne({ where: { linkId } });
     return UserId;
   } catch (e) {
-    throw new ResetPasswordError();
+    throw new errors.ResetPasswordError();
   }
 };
 
@@ -140,20 +138,24 @@ const resetPassword = async ({ password, linkId }) => {
         }
       );
     }
-    throw new ResetPasswordError();
+    throw new errors.ResetPasswordError();
   } catch (e) {
-    throw new ResetPasswordError(e.message);
+    throw new errors.ResetPasswordError(e.message);
   }
 };
 
 const changePassword = async ({ email, password }) => {
-  const newPassword = await hashHelpers.createHash(password);
   const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  if (!user) {
+    throw new errors.UserNotFoundError();
+  }
+
+  const newPassword = await hashHelpers.createHash(password);
   await db.Users.update(
     { password: newPassword },
     { returning: true, where: { email } }
   );
+
   return user;
 };
 
