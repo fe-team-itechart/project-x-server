@@ -5,8 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const swaggerUI = require('swagger-ui-express');
-const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./docs.yaml');
+const swaggerDocument = require('./swagger.json');
 
 require('express-async-errors');
 

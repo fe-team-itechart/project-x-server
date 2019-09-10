@@ -3,25 +3,202 @@ const router = express.Router();
 const controllers = require('../controllers/auth');
 const passport = require('passport');
 
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     name: Login
+ *     summary: Logs in a user
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *         example:
+ *                {
+ *                   "email":"universezxcv@gmail.com",
+ *                   "password":"123123123"
+ *                }
+ *         required:
+ *           - username
+ *           - password
+ *     responses:
+ *        '200':
+ *         description: Return token
+ *         content:
+ *           application/json; charset=utf-8:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                token:
+ *                  type: string
+ *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
+ */
+
 router.post('/login', controllers.login);
+
+/**
+ * @swagger
+ * /api/users/registration:
+ *   post:
+ *     name: Registration
+ *     summary: Registr  a user
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *              type: object
+ *              properties:
+ *                firstName:
+ *                  type: string
+ *                lastName:
+ *                  type: string
+ *                password:
+ *                  type: string
+ *                confirmPassword:
+ *                  type: string
+ *                email:
+ *                  type: string
+ *         example:
+ *                {
+ *                   "email":"universezxcv@gmail.com",
+ *                   "password":"123123123",
+ *                   "confirmPassword":"123123123",
+ *                   "firstName":"Artem",
+ *                   "lastName":"Kashin",
+ *                }
+ *         required:
+ *           - username
+ *           - password
+ *     responses:
+ *        '200':
+ *         description: Return token
+ *         content:
+ *           application/json; charset=utf-8:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                token:
+ *                  type: string
+ *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
+ */
 router.post('/registration', controllers.registration);
+
+/**
+ * @swagger
+ * /api/users/auth/google:
+ *   get:
+ *     name: Google request
+ *     summary: Google request
+ *     responses:
+ *        '200':
+ *         description: Redirect to callback route
+ */
 
 router.get(
   '/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
+
+/**
+ * @swagger
+ * /api/auth/users/google/callback:
+ *   get:
+ *     name: Callback from google after login
+ *     summary: Google request
+ *     responses:
+ *        '200':
+ *         description: Return token
+ *         content:
+ *           application/json; charset=utf-8:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                token:
+ *                  type: string
+ *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
+ */
+
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/', session: false }),
   controllers.socialLogin
 );
 
+/**
+ * @swagger
+ * /api/users/auth/linkedin:
+ *   get:
+ *     name: Callback from linkein after login
+ *     summary: Linkein request
+ *     responses:
+ *       '200':
+ *        description: Redirect to callback function
+*/
+
 router.get('/auth/linkedin', passport.authenticate('linkedin'));
+
+/**
+ * @swagger
+ * /api/users/auth/linkedin/callback:
+ *   get:
+ *     name: Callback from linkein after login
+ *     summary: Linkein request
+ *     responses:
+ *        '200':
+ *         description: Return token
+ *         content:
+ *           application/json; charset=utf-8:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                token:
+ *                  type: string
+ *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
+ */
+
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', { failureRedirect: '/', session: false }),
   controllers.socialLogin
 );
+
+/**
+ * @swagger
+ * /api/users/change-password:
+ *   put:
+ *     name: Change password
+ *     summary: Change user password
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - name: userId
+ *         in: query
+ *         schema:
+ *              type: object
+ *              properties:
+ *                password:
+ *                  type: string
+ *         example:
+ *                {
+ *                   "password":"123123123",
+ *                }
+ *         required:
+ *           - username
+ *           - password
+ *     responses:
+ *        '200':
+ *         description: Success
+ */
 
 router.put('/change-password', controllers.changePassword);
 module.exports = router;
