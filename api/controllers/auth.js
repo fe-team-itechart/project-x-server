@@ -106,16 +106,16 @@ const resetPassword = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { password } = req.body;
-  const { userId } = req.params;
-
-  const { error } = passwordSchema.validate(password);
+  const { error } = passwordSchema.validate(req.body.password);
 
   if (!isEmpty(error)) {
     return res.status(400).json(error.message);
   }
 
-  const response = await services.changePassword(userId, password);
+  const response = await services.changePassword(
+    req.params.userId,
+    req.body.password
+  );
   res.send(response);
 };
 
