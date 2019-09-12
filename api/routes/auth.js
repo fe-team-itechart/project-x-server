@@ -172,6 +172,7 @@ router.get(
   controllers.socialLogin
 );
 
+
 /**
  * @swagger
  * /api/users/change-password/{userId}:
@@ -201,6 +202,12 @@ router.get(
  *        '200':
  *         description: Success
  */
+router.post('/reset', controllers.reset);
+
+router.post('/reset/:linkId', controllers.resetApprovementPassword);
+
+router.post('/reset-password', controllers.resetPassword);
 
 router.put('/change-password/:userId', controllers.changePassword);
+
 module.exports = router;

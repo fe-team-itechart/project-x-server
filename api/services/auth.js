@@ -1,6 +1,10 @@
-const { hashHelpers, jwtHelpers } = require('../helpers');
+const nodemailer = require('nodemailer');
+
+const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
+
+const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
@@ -70,14 +74,87 @@ const registration = async ({ firstName, lastName, email, password }) => {
   }
 };
 
-const changePassword = async ({ email, password }) => {
+/**
+ * TODO: It needs to think about creating link for reset password
+ * @param {*} param0 - object which contents email field
+ */
+
+const resetPasswordRequest = async ({ email }) => {
+  try {
+    const user = await db.Users.findOne({ where: { email } });
+    if (user) {
+      let linkId = await hashHelpers.createHash(email);
+      await db.ForgotPassword.findOrCreate({
+        where: { linkId },
+        defaults: { UserId: user.id },
+      });
+      linkId = encodeURIComponent(linkId);
+      const info = await emailHelpers.sendEmail(
+        email,
+        `Follow link ${HOST}/reset?id=${linkId}`,
+        `${HOST}/reset?id=${linkId}`
+      );
+      console.log(nodemailer.getTestMessageUrl(info), ' ');
+      return info;
+    }
+    throw new errors.UserNotFoundError();
+  } catch (e) {
+    throw new errors.ResetPasswordError(e.message);
+  }
+};
+
+const resetPasswordApprove = async ({ linkId }) => {
+  try {
+    const { UserId } = await db.ForgotPassword.findOne({ where: { linkId } });
+    return UserId;
+  } catch (e) {
+    throw new errors.ResetPasswordError();
+  }
+};
+
+/**
+ * TODO: It needs to use Transactions
+ * @param {*} param0
+ */
+
+const resetPassword = async ({ password, linkId }) => {
+  try {
+    const linkIdDecoded = decodeURIComponent(linkId);
+    const link = await db.ForgotPassword.findOne({
+      where: { linkId: linkIdDecoded },
+    });
+    if (link) {
+      const { UserId } = link;
+      link.destroy();
+      const User = await db.Users.findOne({ where: { id: UserId } });
+      const newPass = await hashHelpers.createHash(password);
+      const user = User.update({
+        password: newPass,
+      });
+      return (
+        user && {
+          status: 200,
+          message: 'Password updated',
+        }
+      );
+    }
+    throw new errors.ResetPasswordError();
+  } catch (e) {
+    throw new errors.ResetPasswordError(e.message);
+  }
+};
+
+const changePassword = async (userId, password) => {
   const newPassword = await hashHelpers.createHash(password);
-  const user = await db.Users.findOne({ where: { email } });
-  if (!user) throw Error('User not found.');
+  const user = await db.Users.findByPk(userId);
+
+  if (!user) throw new errors.UserNotFoundError();
+
   await db.Users.update(
     { password: newPassword },
-    { returning: true, where: { email } }
+    { returning: true, where: { id: userId } }
   );
+
   return user;
 };
 
@@ -85,5 +162,8 @@ module.exports = {
   login,
   socialLogin,
   registration,
+  resetPasswordRequest,
+  resetPasswordApprove,
+  resetPassword,
   changePassword,
 };
