@@ -5,10 +5,8 @@ module.exports = {
     version: '0.1',
     description: 'Project-X',
   },
-  servers:[
-    {
-      url:"http://localhost:8080/"
-    }
-  ],
+  servers:[{
+    url: 'http://localhost:8080',
+  }],
   apis: ['api/**/*.js'],
 };

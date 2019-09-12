@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": " npm run swagger && nodemon index.js",
-    "swagger": "swagger-jsdoc -d swaggerDef.js -o swagger.json"
+    "swagger": "swagger-jsdoc -d ./config/swaggerDef.js -o swagger.json"
   },
   "keywords": [],
   "author": "",

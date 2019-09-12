@@ -11,21 +11,21 @@ const passport = require('passport');
  *     summary: Logs in a user
  *     consumes:
  *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
  *             type: object
  *             properties:
  *               password:
  *                 type: string
  *               email:
  *                 type: string
- *         example:
- *                {
- *                   "email":"universezxcv@gmail.com",
- *                   "password":"123123123"
- *                }
+ *           example:
+ *            {
+ *              "email":"slavasgod@gmail.com",
+ *              "password":"123123123"
+ *             }
  *         required:
  *           - username
  *           - password
@@ -49,26 +49,26 @@ router.post('/login', controllers.login);
  * /api/users/registration:
  *   post:
  *     name: Registration
- *     summary: Registr  a user
+ *     summary: Register  a user
  *     consumes:
  *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         schema:
- *              type: object
- *              properties:
- *                firstName:
- *                  type: string
- *                lastName:
- *                  type: string
- *                password:
- *                  type: string
- *                confirmPassword:
- *                  type: string
- *                email:
- *                  type: string
- *         example:
+  *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               confirmPassword:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *           example:
  *                {
  *                   "email":"universezxcv@gmail.com",
  *                   "password":"123123123",
@@ -139,11 +139,11 @@ router.get(
  * /api/users/auth/linkedin:
  *   get:
  *     name: Callback from linkein after login
- *     summary: Linkein request
+ *     summary: Linkedin request
  *     responses:
  *       '200':
  *        description: Redirect to callback function
-*/
+ */
 
 router.get('/auth/linkedin', passport.authenticate('linkedin'));
 
@@ -152,7 +152,7 @@ router.get('/auth/linkedin', passport.authenticate('linkedin'));
  * /api/users/auth/linkedin/callback:
  *   get:
  *     name: Callback from linkein after login
- *     summary: Linkein request
+ *     summary: Linkedin request
  *     responses:
  *        '200':
  *         description: Return token
@@ -174,31 +174,33 @@ router.get(
 
 /**
  * @swagger
- * /api/users/change-password:
+ * /api/users/change-password/{userId}:
  *   put:
  *     name: Change password
  *     summary: Change user password
  *     consumes:
  *       - application/json
  *     parameters:
- *       - name: userId
- *         in: query
- *         schema:
- *              type: object
- *              properties:
- *                password:
- *                  type: string
- *         example:
- *                {
- *                   "password":"123123123",
- *                }
+ *       - in: path
+ *         name: userId
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *           example:
+ *            {
+ *              "password":"123123123"
+ *             }
  *         required:
- *           - username
  *           - password
  *     responses:
  *        '200':
  *         description: Success
  */
 
-router.put('/change-password', controllers.changePassword);
+router.put('/change-password/:userId', controllers.changePassword);
 module.exports = router;
