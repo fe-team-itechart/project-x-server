@@ -4,6 +4,8 @@ const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const swaggerUI = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 require('express-async-errors');
 
@@ -24,6 +26,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 app.use('/api/users/', auth);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorHandlerMiddleware);
 

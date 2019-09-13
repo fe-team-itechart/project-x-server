@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": " npm run swagger && nodemon index.js",
+    "swagger": "swagger-jsdoc -d ./config/swaggerDef.js -o swagger.json"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,9 @@
     "passport-linkedin-oauth2": "^2.0.0",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^5.13.1"
+    "sequelize": "^5.13.1",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.0.7"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
