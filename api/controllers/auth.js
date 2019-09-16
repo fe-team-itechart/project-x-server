@@ -12,10 +12,10 @@ const errors = require('../services/errorHandlers');
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const errorsValidation = loginValidate(email, password);
+  const errors = loginValidate(email, password);
 
-  if (!isEmpty(errorsValidation)) {
-    return res.status(400).json(errorsValidation);
+  if (!isEmpty(errors)) {
+    return res.status(400).json(errors);
   }
 
   const response = await services.login(req.body);
@@ -30,7 +30,7 @@ const socialLogin = async (req, res) => {
 const registration = async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body;
 
-  const errorsValidation = registerValidate(
+  const errors = registerValidate(
     firstName,
     lastName,
     email,
@@ -38,8 +38,8 @@ const registration = async (req, res) => {
     confirmPassword
   );
 
-  if (!isEmpty(errorsValidation)) {
-    return res.status(400).json(errorsValidation);
+  if (!isEmpty(errors)) {
+    return res.status(400).json(errors);
   }
 
   const response = await services.registration(req.body);
@@ -116,7 +116,7 @@ const changePassword = async (req, res) => {
     req.params.userId,
     req.body.password
   );
-  res.send(response);
+  res.status(200).send(response);
 };
 
 module.exports = {
