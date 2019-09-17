@@ -12,7 +12,7 @@ const controllers = require('../controllers/profile');
  *       - application/json
  *     parameters:
  *       - in: header
- *         name: Security
+ *         name: Token
  *         schema:
  *           type: string
  *         required: true
@@ -34,7 +34,7 @@ router.get('/public', controllers.getProfile);
  *       - application/json
  *     parameters:
  *       - in: header
- *         name: Security
+ *         name: Token
  *         schema:
  *           type: string
  *         required: true

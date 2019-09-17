@@ -255,7 +255,7 @@
         "parameters": [
           {
             "in": "header",
-            "name": "Security",
+            "name": "Token",
             "schema": {
               "type": "string"
             },
@@ -280,7 +280,7 @@
         "parameters": [
           {
             "in": "header",
-            "name": "Security",
+            "name": "Token",
             "schema": {
               "type": "string"
             },
