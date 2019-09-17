@@ -3,6 +3,8 @@ const router = express.Router();
 const controllers = require('../controllers/auth');
 const passport = require('passport');
 
+const jwtGuard = require('../middlewares/jwtGuard');
+
 /**
  * @swagger
  * /api/users/login:
@@ -52,7 +54,7 @@ router.post('/login', controllers.login);
  *     summary: Register  a user
  *     consumes:
  *       - application/json
-  *     requestBody:
+ *     requestBody:
  *       content:
  *         application/json:
  *           schema:
@@ -172,7 +174,6 @@ router.get(
   controllers.socialLogin
 );
 
-
 /**
  * @swagger
  * /api/users/change-password/{userId}:
@@ -208,6 +209,6 @@ router.post('/reset/:linkId', controllers.resetApprovementPassword);
 
 router.post('/reset-password', controllers.resetPassword);
 
-router.put('/change-password/:userId', controllers.changePassword);
+router.put('/change-password/:userId', jwtGuard, controllers.changePassword);
 
 module.exports = router;
