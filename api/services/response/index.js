@@ -1,7 +1,8 @@
 const { statusMessagesHelper: statusMessages } = require('../../helpers');
 
 class BaseResponse {
-  getBody({ status = 200, data = {}, message = '' }) {
+  static responseBuilder({ status = 200, data = {}, message }) {
+    message = message ? message : statusMessages[status];
     return {
       status,
       statusMessage: statusMessages[status],
