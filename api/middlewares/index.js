@@ -1,7 +1,7 @@
-const refreshAccessToken = require('./refreshAccessToken');
+const { refreshToken } = require('./refreshAccessToken');
 const { errorHandlerMiddleware } = require('./errorHandler');
 
 module.exports = {
-  refreshAccessToken,
+  refreshToken,
   errorHandlerMiddleware,
 };
