@@ -4,19 +4,25 @@ const jwt = require('jsonwebtoken');
 
 const getProfile = async token => {
   const { id } = jwt.decode(token);
-  const user = await db.Users.findByPk(id);
+  const user = await db.Users.findByPk(id, {
+    include: [
+      {
+        model: db.PublicProfiles,
+      },
+    ],
+  });
 
   if (!user) {
     throw new errors.UserNotFoundError();
   }
 
-  const { firstName, lastName } = user;
   const {
-    description,
-    twitterLink,
-    linkedInLink,
-    facebookLink,
-  } = await db.PublicProfiles.findByPk(id);
+    firstName,
+    lastName,
+    PublicProfile: {
+      dataValues: { twitterLink, linkedInLink, facebookLink, description },
+    },
+  } = user;
 
   const profile = {
     firstName,
