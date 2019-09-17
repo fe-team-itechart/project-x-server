@@ -1,13 +1,17 @@
 const jwt = require('jsonwebtoken');
 
 const refreshToken = (req, res, next) => {
-  let decodedToken = jwt.decode(req.headers.token);
+  const { id, email } = jwt.decode(req.headers.token);
+
   const user = {
-    id: decodedToken.id,
-    name: decodedToken.email,
-    expiresIn: process.env.EXPIRES_IN,
+    id,
+    email,
   };
-  const token = jwt.sign(user, process.env.SECRET);
+
+  const token = jwt.sign(user, process.env.SECRET, {
+    expiresIn: process.env.EXPIRES_IN,
+  });
+
   req.headers.token = token;
   next();
 };
