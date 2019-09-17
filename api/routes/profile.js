@@ -4,18 +4,20 @@ const controllers = require('../controllers/profile');
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     Bearer:
+ *        type: apiKey
+ *        name: Authorization
+ *        in: header
  * /api/profile/public:
- *   get:
+ *    get:
+ *     security:
+ *       - Bearer: []
  *     name: Get Profile
  *     summary: Get user profile
  *     consumes:
  *       - application/json
- *     parameters:
- *       - in: header
- *         name: Token
- *         schema:
- *           type: string
- *         required: true
  *     responses:
  *        '200':
  *         description: Success
@@ -26,18 +28,20 @@ router.get('/public', controllers.getProfile);
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     Bearer:
+ *       type: apiKey
+ *       name: Authorization
+ *       in: header
  * /api/profile/public:
  *   put:
+ *     security:
+ *       - Bearer: []
  *     name: Update Profile
  *     summary: Update user profle
  *     consumes:
  *       - application/json
- *     parameters:
- *       - in: header
- *         name: Token
- *         schema:
- *           type: string
- *         required: true
  *     requestBody:
  *       content:
  *         application/json:

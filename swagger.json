@@ -247,20 +247,15 @@
     },
     "/api/profile/public": {
       "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "name": "Get Profile",
         "summary": "Get user profile",
         "consumes": [
           "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Token",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          }
         ],
         "responses": {
           "200": {
@@ -272,20 +267,15 @@
         }
       },
       "put": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "name": "Update Profile",
         "summary": "Update user profle",
         "consumes": [
           "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "Token",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          }
         ],
         "requestBody": {
           "content": {
@@ -377,6 +367,14 @@
       }
     }
   },
-  "components": {},
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
   "tags": []
 }

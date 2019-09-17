@@ -2,8 +2,8 @@ const db = require('../../database');
 const errors = require('./errorHandlers/index');
 const jwt = require('jsonwebtoken');
 
-const getProfile = async token => {
-  const { id } = jwt.decode(token);
+const getProfile = async authorization => {
+  const { id } = jwt.decode(authorization);
   const user = await db.Users.findByPk(id, {
     include: [
       {
@@ -37,7 +37,7 @@ const getProfile = async token => {
 };
 
 const updateProfile = async req => {
-  const { id } = jwt.decode(req.headers.token);
+  const { id } = jwt.decode(req.headers.authorization);
   const user = await db.Users.findByPk(id);
 
   if (!user) throw new errors.UserNotFoundError();
