@@ -1,9 +1,9 @@
 const db = require('../../database');
 const errors = require('./errorHandlers/index');
-const jwt_decode = require('jwt-decode');
+const jwt = require('jsonwebtoken');
 
-const getProfile = async token => {
-  const { id } = jwt_decode(token);
+const getProfile = async security => {
+  const { id } = jwt.decode(security);
   const user = await db.Users.findByPk(id);
 
   if (!user) {
@@ -31,7 +31,7 @@ const getProfile = async token => {
 };
 
 const updateProfile = async req => {
-  const { id } = jwt_decode(req.headers.token);
+  const { id } = jwt.decode(req.headers.security);
   const user = await db.Users.findByPk(id);
 
   if (!user) throw new errors.UserNotFoundError();
@@ -45,22 +45,33 @@ const updateProfile = async req => {
     description,
   } = req.body;
 
-  await db.Users.update(
-    { firstName, lastName },
-    { returning: true, where: { id } }
-  );
+  const transaction = await db.sequelize.transaction();
 
-  const profile = await db.PublicProfiles.update(
-    {
-      twitterLink,
-      linkedInLink,
-      facebookLink,
-      description,
-    },
-    { returning: true, where: { id } }
-  );
+  try {
+    await db.Users.update(
+      { firstName, lastName },
+      { returning: true, where: { id } },
+      { transaction }
+    );
 
-  return profile;
+    const profile = await db.PublicProfiles.update(
+      {
+        twitterLink,
+        linkedInLink,
+        facebookLink,
+        description,
+      },
+      { returning: true, where: { id } },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return profile;
+  } catch (err) {
+    await transaction.rollback();
+    throw new errors.ProfileUpdateFailedError();
+  }
 };
 
 module.exports = {

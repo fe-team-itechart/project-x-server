@@ -14,7 +14,7 @@ const publicProfileValidate = profile => {
     description,
     twitterLink,
     facebookLink,
-    linkedinLink,
+    linkedInLink,
   } = profile;
 
   const firstNameValidate = Joi.validate(firstName, firstNameSchema);
@@ -28,8 +28,8 @@ const publicProfileValidate = profile => {
   const facebookLinkValidate = facebookLink
     ? Joi.validate(facebookLink, socialSchema)
     : '';
-  const linkedinLinkValidate = linkedinLink
-    ? Joi.validate(linkedinLink, socialSchema)
+  const linkedInLinkValidate = linkedInLink
+    ? Joi.validate(linkedInLink, socialSchema)
     : '';
 
   if (firstNameValidate.error) {
@@ -67,8 +67,8 @@ const publicProfileValidate = profile => {
     );
   }
 
-  if (linkedinLinkValidate.error) {
-    errors.linkedinLink = linkedinLinkValidate.error.details[0].message.replace(
+  if (linkedInLinkValidate.error) {
+    errors.linkedInLink = linkedInLinkValidate.error.details[0].message.replace(
       '"value"',
       'Linkedin link'
     );

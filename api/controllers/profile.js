@@ -1,11 +1,11 @@
+const { isEmpty } = require('lodash');
+
 const services = require('../services/profile');
 
 const { publicProfileValidate } = require('../validation/profile');
 
-const { isEmpty } = require('lodash');
-
 const getProfile = async (req, res) => {
-  const response = await services.getProfile(req.headers.token);
+  const response = await services.getProfile(req.headers.security);
   res.status(200).send(response);
 };
 
