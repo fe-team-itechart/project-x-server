@@ -33,7 +33,6 @@ const registration = async ({ firstName, lastName, email, password }) => {
   if (user) {
     throw new errors.UserAlreadyExistsError();
   }
-
   const transaction = await db.sequelize.transaction();
 
   try {
