@@ -9,7 +9,7 @@ const swaggerDocument = require('./swagger.json');
 
 require('express-async-errors');
 
-const { auth } = require('./api/routes');
+const { auth, profile } = require('./api/routes');
 const { errorHandlerMiddleware } = require('./api/middlewares');
 
 const app = express();
@@ -26,6 +26,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 app.use('/api/users/', auth);
+app.use('/api/profile/', profile);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorHandlerMiddleware);
