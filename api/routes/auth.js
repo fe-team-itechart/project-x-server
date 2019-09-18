@@ -4,6 +4,8 @@ const passport = require('passport');
 
 const controllers = require('../controllers/auth');
 const { refreshToken } = require('../middlewares/index');
+const jwtGuard = require('../middlewares/jwtGuard');
+
 /**
  * @swagger
  * /api/users/login:
@@ -211,6 +213,7 @@ router.post('/reset-password', controllers.resetPassword);
 router.put(
   '/change-password/:userId',
   refreshToken,
+  jwtGuard,
   controllers.changePassword
 );
 
