@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const controllers = require('../controllers/auth');
 const passport = require('passport');
 
+const controllers = require('../controllers/auth');
+const { refreshToken } = require('../middlewares/index');
 const jwtGuard = require('../middlewares/jwtGuard');
 
 /**
@@ -209,6 +210,11 @@ router.post('/reset/:linkId', controllers.resetApprovementPassword);
 
 router.post('/reset-password', controllers.resetPassword);
 
-router.put('/change-password/:userId', jwtGuard, controllers.changePassword);
+router.put(
+  '/change-password/:userId',
+  refreshToken,
+  jwtGuard,
+  controllers.changePassword
+);
 
 module.exports = router;

@@ -31,6 +31,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorHandlerMiddleware);
 
+
 app.listen(PORT, function() {
   console.log(`Listening on port ${PORT}`);
 });
