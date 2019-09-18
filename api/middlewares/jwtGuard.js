@@ -7,11 +7,11 @@ const {
 
 const jwtGuard = (req, res, next) => {
   try {
-    if (!req.headers.token) {
+    if (!req.headers.authorization) {
       throw new UnauthorizedError();
     }
 
-    const decoded = jwt.verify(req.headers.token, process.env.SECRET);
+    const decoded = jwt.verify(req.headers.authorization, process.env.SECRET);
 
     next();
   } catch (error) {
