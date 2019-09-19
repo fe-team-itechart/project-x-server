@@ -2,7 +2,7 @@ const ApplicationError = require('./applicationError');
 
 class UserNotFoundError extends ApplicationError {
   constructor(message) {
-    super(message || 'User not found.', 404);
+    super(message || 'User not found.', 404, 'email');
   }
 }
 
