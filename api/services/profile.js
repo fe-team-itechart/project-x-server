@@ -60,7 +60,7 @@ const updateProfile = async req => {
       { transaction }
     );
 
-    const profile = await db.PublicProfiles.update(
+    await db.PublicProfiles.update(
       {
         twitterLink,
         linkedInLink,
@@ -72,6 +72,23 @@ const updateProfile = async req => {
     );
 
     await transaction.commit();
+
+    const user = await db.Users.findByPk(id, {
+      include: [
+        {
+          model: db.PublicProfiles,
+        },
+      ],
+    });
+
+    const profile = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      twitterLink: user.PublicProfile.twitterLink,
+      linkedInLink: user.PublicProfile.linkedInLink,
+      facebookLink: user.PublicProfile.facebookLink,
+      description: user.PublicProfile.description,
+    };
 
     return profile;
   } catch (err) {
