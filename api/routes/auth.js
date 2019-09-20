@@ -212,8 +212,8 @@ router.post('/reset-password', controllers.resetPassword);
 
 router.put(
   '/change-password/:userId',
-  refreshToken,
   jwtGuard,
+  refreshToken,
   controllers.changePassword
 );
 
