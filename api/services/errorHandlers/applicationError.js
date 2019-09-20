@@ -1,5 +1,5 @@
 class ApplicationError extends Error {
-  constructor(message, status,type) {
+  constructor(message, status, type) {
     super();
     Error.captureStackTrace(this, this.constructor);
 
