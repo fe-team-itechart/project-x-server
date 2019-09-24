@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
+const jwt = require('jsonwebtoken');
 
 const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
@@ -143,15 +144,16 @@ const resetPassword = async ({ password, linkId }) => {
   }
 };
 
-const changePassword = async (userId, password) => {
+const changePassword = async (authorization, password) => {
+  const { id } = jwt.decode(authorization);
   const newPassword = await hashHelpers.createHash(password);
-  const user = await db.Users.findByPk(userId);
+  const user = await db.Users.findByPk(id);
 
   if (!user) throw new errors.UserNotFoundError();
 
   await db.Users.update(
     { password: newPassword },
-    { returning: true, where: { id: userId } }
+    { returning: true, where: { id } }
   );
 
   return user;
