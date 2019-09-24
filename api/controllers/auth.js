@@ -111,9 +111,9 @@ const changePassword = async (req, res) => {
   if (!isEmpty(error)) {
     return res.status(400).json(error.message);
   }
-
+  
   const response = await services.changePassword(
-    req.params.userId,
+    req.headers.authorization,
     req.body.password
   );
   res.status(200).send(response);

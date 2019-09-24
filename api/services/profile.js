@@ -36,8 +36,8 @@ const getProfile = async authorization => {
   return profile;
 };
 
-const updateProfile = async req => {
-  const { id } = jwt.decode(req.headers.authorization);
+const updateProfile = async (authorization, data) => {
+  const { id } = jwt.decode(authorization);
   const user = await db.Users.findByPk(id);
 
   if (!user) throw new errors.UserNotFoundError();
@@ -49,7 +49,7 @@ const updateProfile = async req => {
     linkedInLink,
     facebookLink,
     description,
-  } = req.body;
+  } = data;
 
   const transaction = await db.sequelize.transaction();
 
