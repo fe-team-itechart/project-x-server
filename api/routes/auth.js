@@ -211,9 +211,9 @@ router.post('/reset/:linkId', controllers.resetApprovementPassword);
 router.post('/reset-password', controllers.resetPassword);
 
 router.put(
-  '/change-password/:userId',
-  refreshToken,
+  '/change-password/',
   jwtGuard,
+  refreshToken,
   controllers.changePassword
 );
 

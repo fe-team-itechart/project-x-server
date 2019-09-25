@@ -17,12 +17,14 @@ const emailSchema = Joi.string()
 
 const passwordSchema = Joi.string()
   .required()
+  .regex(/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/)
   .min(8)
   .max(32);
 
 const passwordConfirmSchema = Joi.object().keys({
   password: Joi.string()
     .required()
+    .regex(/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/)
     .min(8)
     .max(32),
   confirmPassword: Joi.any()

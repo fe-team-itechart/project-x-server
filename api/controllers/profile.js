@@ -16,7 +16,10 @@ const updateProfile = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.updateProfile(req);
+  const response = await services.updateProfile(
+    req.headers.authorization,
+    req.body
+  );
   res.status(200).send(response);
 };
 
