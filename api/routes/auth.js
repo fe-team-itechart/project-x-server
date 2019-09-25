@@ -204,11 +204,9 @@ router.get(
  *        '200':
  *         description: Success
  */
-router.post('/reset', controllers.reset);
+router.post('/forgot-password', controllers.forgotPassword);
 
-router.post('/reset/:linkId', controllers.resetApprovementPassword);
-
-router.post('/reset-password', controllers.resetPassword);
+router.post('/reset-password', jwtGuard, controllers.resetPassword);
 
 router.put(
   '/change-password/',
