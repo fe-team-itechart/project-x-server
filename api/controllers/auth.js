@@ -55,7 +55,7 @@ const forgotPassword = async (req, res) => {
   try {
     await emailSchema.validate(email);
     const info = await services.forgotPassword({ email });
-    const response = BaseResponse.responseBuilder({data: info});
+    const response = BaseResponse.responseBuilder({message: 'Mail sent', data: info});
     res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
@@ -65,7 +65,7 @@ const forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { password, confirmPassword } = req.body;
   const token = req.headers.authorization;
-  
+
   if ( !password || !confirmPassword ) {
     throw new errors.ResetPasswordError('Empty params');
   }
