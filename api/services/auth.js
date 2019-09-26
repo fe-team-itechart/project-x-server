@@ -1,9 +1,11 @@
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 
 const { hashHelpers, jwtHelpers, emailHelpers } = require('../helpers');
 const errors = require('./errorHandlers/index');
 const db = require('../../database');
-const jwt = require('jsonwebtoken');
+const BaseResponse = require('./response');
+
 
 const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
@@ -80,20 +82,23 @@ const forgotPassword = async ({ email }) => {
     if (user) {
       const { id } = user;
       let { token } = await jwtHelpers.generateToken({ id, email });
-      const info = await emailHelpers.sendEmail(
+      const dataEmailing = await emailHelpers.sendEmail(
         email,
         `Follow link ${HOST}/reset?id=${token}`,
         `${HOST}/reset?id=${token}`
       );
       if (info.rejected.length === 0) {
-        await db.Users.update({
-          refreshTokenForgotPassword: token
-        }, {
-          where: { email }
-        });
+        await db.Users.update(
+          {
+            resetPasswordToken: token,
+          },
+          {
+            where: { email },
+          }
+        );
       }
-      console.log(nodemailer.getTestMessageUrl(info), ' ');
-      return info;
+      console.log(nodemailer.getTestMessageUrl(dataEmailing), ' ');
+      return dataEmailing;
     }
     throw new errors.UserNotFoundError();
   } catch (e) {
@@ -108,22 +113,24 @@ const forgotPassword = async ({ email }) => {
 
 const resetPassword = async ({ password, token }) => {
   try {
-      const User = await db.Users.findOne({ where: { refreshTokenForgotPassword: token } });
-      if (!User) {
-        throw new errors.UserNotFoundError();
-      }
-      const newPass = await hashHelpers.createHash(password);
-      const user = User && User.update({
-        password: newPass,
-        refreshTokenForgotPassword: null
+    const User = await db.Users.findOne({
+      where: { resetPasswordToken: token },
+    });
+    if (!User) {
+      throw new errors.UserNotFoundError();
+    }
+    const newPass = await hashHelpers.createHash(password);
+    const user = User.update({
+      password: newPass,
+      resetPasswordToken: null,
+    });
+    if (user) {
+      return BaseResponse.responseBuilder({
+        status: 200,
+        message: 'Password updated',
       });
-      if ( user ) {
-        return {
-          status: 200,
-          message: 'Password updated',
-        };
-      } 
-      throw new errors.ResetPasswordError();
+    }
+    throw new errors.ResetPasswordError();
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
   }

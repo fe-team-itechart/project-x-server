@@ -54,8 +54,8 @@ const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     await emailSchema.validate(email);
-    const info = await services.forgotPassword({ email });
-    const response = BaseResponse.responseBuilder({message: 'Mail sent', data: info});
+    const dataEmailing = await services.forgotPassword({ email });
+    const response = BaseResponse.responseBuilder({message: 'Mail sent', data: dataEmailing});
     res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
@@ -71,13 +71,11 @@ const resetPassword = async (req, res) => {
   }
 
   try {
-    const validation = await passwordConfirmSchema.validate({
+    await passwordConfirmSchema.validate({
       password,
       confirmPassword,
     });
-
-    const answer = await services.resetPassword({ password, token });
-    const response = BaseResponse.responseBuilder({...answer })
+    const response = await services.resetPassword({ password, token });
     res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);

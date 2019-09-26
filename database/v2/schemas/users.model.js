@@ -28,7 +28,7 @@ module.exports = (sequalize, type) => {
         allowNull: false,
         defaultValue: 'User'
       },
-      refreshTokenForgotPassword: {
+      resetPasswordToken: {
         type: type.STRING(255),
         allowNull: true
       },
