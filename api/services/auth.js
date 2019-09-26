@@ -87,17 +87,14 @@ const forgotPassword = async ({ email }) => {
         `Follow link ${HOST}/reset?id=${token}`,
         `${HOST}/reset?id=${token}`
       );
-      if (info.rejected.length === 0) {
-        await db.Users.update(
-          {
-            resetPasswordToken: token,
-          },
-          {
-            where: { email },
-          }
-        );
-      }
-      console.log(nodemailer.getTestMessageUrl(dataEmailing), ' ');
+      await db.Users.update(
+        {
+          resetPasswordToken: token,
+        },
+        {
+          where: { email },
+        }
+      );
       return dataEmailing;
     }
     throw new errors.UserNotFoundError();
