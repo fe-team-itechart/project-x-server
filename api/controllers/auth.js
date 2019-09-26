@@ -66,10 +66,6 @@ const resetPassword = async (req, res) => {
   const { password, confirmPassword } = req.body;
   const token = req.headers.authorization;
 
-  if ( !password || !confirmPassword ) {
-    throw new errors.ResetPasswordError('Empty params');
-  }
-
   try {
     await passwordConfirmSchema.validate({
       password,

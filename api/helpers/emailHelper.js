@@ -7,7 +7,7 @@ const sendEmail = async (address, text, link) => {
   });
   
   let mailOptions = {
-    from: `Beach-resorts-tours <${process.env.EMAIL_USERNAME}>`,
+    from: `Project-x <${process.env.EMAIL_USERNAME}>`,
     to: address,
     subject: "Reset Password!",
     text,

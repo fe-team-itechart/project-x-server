@@ -103,11 +103,6 @@ const forgotPassword = async ({ email }) => {
   }
 };
 
-/**
- * TODO: It needs to use Transactions
- * @param {*} param0
- */
-
 const resetPassword = async ({ password, token }) => {
   try {
     const User = await db.Users.findOne({
