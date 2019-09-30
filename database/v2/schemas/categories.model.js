@@ -1,16 +1,17 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'CourseComments',
+    'Categories',
     {
       id: {
-        type: type.UUID,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
       },
       title: {
         type: type.STRING(128),
         allowNull: false,
       },
-      comment: {
+      description: {
         type: type.STRING(1000),
         allowNull: true,
       },
@@ -24,16 +25,9 @@ module.exports = (sequelize, type) => {
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'course_comments',
+      tableName: 'categories',
     }
   );
-  MODEL.associate = models => {
-    MODEL.belongsTo(models.Courses, {
-      foreignKey: 'course_id',
-    });
-    MODEL.belongsTo(models.Users, {
-      foreignKey: 'user_id',
-    })
-  };
+  
   return MODEL;
 };

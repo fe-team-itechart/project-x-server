@@ -57,6 +57,7 @@ module.exports = (sequalize, type) => {
         model: models.UsersCourses,
         unique: true,
       },
+      foreignKey: 'userId',
     });
   };
 
