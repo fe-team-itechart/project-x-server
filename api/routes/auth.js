@@ -206,7 +206,7 @@ router.get(
  */
 
 router.put(
-  '/change-password/',
+  '/change-password',
   jwtGuard,
   refreshToken,
   controllers.changePassword

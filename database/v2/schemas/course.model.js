@@ -3,22 +3,38 @@ module.exports = (sequelize, type) => {
     'Courses',
     {
       id: {
-        type: type.UUID,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       title: {
         type: type.STRING(128),
         allowNull: false,
       },
       description: {
-        type: type.TEXT,
+        type: type.STRING(1000),
+        allowNull: true,
+      },
+      numberOfLessons: {
+        type: type.INTEGER,
+        allowNull: false,
+      },
+      rating: {
+        type: type.DOUBLE,
+        allowNull: true,
+      },
+      materials: {
+        type: type.STRING(512),
         allowNull: true,
       },
       createdAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
       updatedAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
     },
     {
@@ -28,11 +44,13 @@ module.exports = (sequelize, type) => {
     }
   );
   MODEL.associate = models => {
-    MODEL.belongsToMany(models.Users, {
+    MODEL.hasMany(models.CourseComments);
+    MODEL.belongsToMany(models.Categories, {
       through: {
-        model: models.UsersCourses,
+        model: models.CourseCategories,
         unique: true,
       },
+      foreignKey: 'courseId',
     });
   };
   return MODEL;

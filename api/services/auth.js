@@ -22,7 +22,7 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const socialLogin = async ({ firstName, lastName, email, password }) => {
+const socialLogin = async ({ email, password, firstName, lastName }) => {
   const user = await db.Users.findOne({ where: { email } });
   if (user) {
     return login({ email, password });
@@ -52,6 +52,8 @@ const registration = async ({ firstName, lastName, email, password }) => {
       const socialUser = {
         email,
         password: null,
+        firstName,
+        lastName,
       };
       createdUser = await db.Users.create(socialUser, { transaction });
     }
