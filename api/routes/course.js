@@ -4,14 +4,14 @@ const router = express.Router();
 const { courseController } = require('../controllers');
 /**
  * @swagger
- * /api/course/preview:
+ * /api/course/preview/{courseId}:
  *    get:
  *     name: Get Course
  *     summary: Get Course Preview
  *     consumes:
  *       - application/json
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: courseId
  *     responses:
  *        '200':
@@ -43,6 +43,6 @@ const { courseController } = require('../controllers');
  *        '400':
  *         description: Course not found.
  */
-router.get('/preview', courseController.getCoursePreview);
+router.get('/preview/:courseId', courseController.getCoursePreview);
 
 module.exports = router;

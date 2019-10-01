@@ -245,7 +245,7 @@
         }
       }
     },
-    "/api/course/preview": {
+    "/api/course/preview/{courseId}": {
       "get": {
         "name": "Get Course",
         "summary": "Get Course Preview",
@@ -254,7 +254,7 @@
         ],
         "parameters": [
           {
-            "in": "query",
+            "in": "path",
             "name": "courseId"
           }
         ],
