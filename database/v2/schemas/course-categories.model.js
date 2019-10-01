@@ -1,19 +1,16 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'Categories',
+    'CourseCategories',
     {
       id: {
-        type: type.NUMBER,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        autoIncrement: true
-      },
-      title: {
-        type: type.STRING(128),
         allowNull: false,
       },
-      description: {
-        type: type.STRING(1000),
-        allowNull: true,
+      title: {
+        type: type.STRING(32),
+        allowNull: false,
       },
       createdAt: {
         type: type.DATE,
@@ -25,9 +22,9 @@ module.exports = (sequelize, type) => {
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'categories',
+      tableName: 'course_categories',
     }
   );
-  
+
   return MODEL;
 };

@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'Courses',
+    'Categories',
     {
       id: {
         type: type.INTEGER,
@@ -16,18 +16,6 @@ module.exports = (sequelize, type) => {
         type: type.STRING(1000),
         allowNull: true,
       },
-      numberOfLessons: {
-        type: type.INTEGER,
-        allowNull: false,
-      },
-      rating: {
-        type: type.DOUBLE,
-        allowNull: true,
-      },
-      materials: {
-        type: type.STRING(512),
-        allowNull: true,
-      },
       createdAt: {
         type: type.DATE,
       },
@@ -38,18 +26,9 @@ module.exports = (sequelize, type) => {
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'courses',
+      tableName: 'categories',
     }
   );
-  MODEL.associate = models => {
-    MODEL.hasMany(models.CourseComments);
-    MODEL.belongsToMany(models.Categories, {
-      through: {
-        model: models.CourseCategories,
-        unique: true,
-      },
-      foreignKey: 'courseId',
-    });
-  };
+  
   return MODEL;
 };

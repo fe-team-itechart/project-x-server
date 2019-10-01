@@ -3,14 +3,12 @@ module.exports = (sequelize, type) => {
     'CourseComments',
     {
       id: {
-        type: type.UUID,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-      },
-      title: {
-        type: type.STRING(128),
         allowNull: false,
       },
-      comment: {
+      text: {
         type: type.STRING(1000),
         allowNull: true,
       },
@@ -28,12 +26,9 @@ module.exports = (sequelize, type) => {
     }
   );
   MODEL.associate = models => {
-    MODEL.belongsTo(models.Courses, {
-      foreignKey: 'course_id',
-    });
     MODEL.belongsTo(models.Users, {
-      foreignKey: 'user_id',
-    })
+      foreignKey: 'userId',
+    });
   };
   return MODEL;
 };
