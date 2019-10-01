@@ -6,6 +6,7 @@ module.exports = (sequelize, type) => {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       localization: {
         type: type.ENUM('ru', 'en'),

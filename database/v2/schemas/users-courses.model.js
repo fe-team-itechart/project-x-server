@@ -6,6 +6,7 @@ module.exports = (sequalize, type) => {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       createdAt: {
         type: type.DATE,

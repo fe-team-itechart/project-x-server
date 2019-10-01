@@ -6,6 +6,7 @@ module.exports = (sequelize, type) => {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       twitterLink: {
         type: type.TEXT,

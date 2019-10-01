@@ -3,8 +3,10 @@ module.exports = (sequelize, type) => {
     'CourseComments',
     {
       id: {
-        type: type.UUID,
+        type: type.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
       text: {
         type: type.STRING(1000),
