@@ -1,4 +1,4 @@
-const services = require('../services/auth');
+const { authService } = require('../services');
 
 const {
   loginValidate,
@@ -18,12 +18,12 @@ const login = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.login(req.body);
+  const response = await authService.login(req.body);
   res.send(response);
 };
 
 const socialLogin = async (req, res) => {
-  const { token } = await services.socialLogin(req.user);
+  const { token } = await authService.socialLogin(req.user);
   res.redirect(process.env.CLIENT_HOST + '?token=' + token);
 };
 
@@ -42,7 +42,7 @@ const registration = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.registration(req.body);
+  const response = await authService.registration(req.body);
   res.status(201).send(response);
 };
 
@@ -51,7 +51,7 @@ const reset = async (req, res) => {
   try {
     const validation = await emailSchema.validate({ email });
     const answer =
-      validation && (await services.resetPasswordRequest({ email }));
+      validation && (await authService.resetPasswordRequest({ email }));
     const status = answer.status ? answer.status : 200;
     const response = answer.messageId ? 'Mail was sent' : answer.message;
     res.status(status).send(response);
@@ -68,7 +68,7 @@ const resetApprovementPassword = async (req, res) => {
       throw new errors.ResetPasswordApproveError('Empty params');
     }
 
-    const userId = await services.resetPasswordApprove({
+    const userId = await authService.resetPasswordApprove({
       linkId: decodeURIComponent(linkId),
     });
 
@@ -97,7 +97,7 @@ const resetPassword = async (req, res) => {
     });
 
     const answer =
-      validation && (await services.resetPassword({ password, linkId }));
+      validation && (await authService.resetPassword({ password, linkId }));
 
     res.status(200).send(answer);
   } catch (e) {
@@ -111,8 +111,8 @@ const changePassword = async (req, res) => {
   if (!isEmpty(error)) {
     return res.status(400).json(error.message);
   }
-  
-  const response = await services.changePassword(
+
+  const response = await authService.changePassword(
     req.headers.authorization,
     req.body.password
   );

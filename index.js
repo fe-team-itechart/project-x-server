@@ -9,7 +9,7 @@ const swaggerDocument = require('./swagger.json');
 
 require('express-async-errors');
 
-const { auth, profile } = require('./api/routes');
+const { auth, profile, course } = require('./api/routes');
 const { errorHandlerMiddleware } = require('./api/middlewares');
 
 const app = express();
@@ -27,10 +27,10 @@ app.use(express.json());
 
 app.use('/api/users/', auth);
 app.use('/api/profile/', profile);
+app.use('/api/course/', course);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use(errorHandlerMiddleware);
-
 
 app.listen(PORT, function() {
   console.log(`Listening on port ${PORT}`);

@@ -1,11 +1,11 @@
 const { isEmpty } = require('lodash');
 
-const services = require('../services/profile');
+const { profileService } = require('../services');
 
 const { publicProfileValidate } = require('../validation/profile');
 
 const getProfile = async (req, res) => {
-  const response = await services.getProfile(req.headers.authorization);
+  const response = await profileService.getProfile(req.headers.authorization);
   res.status(200).send(response);
 };
 
@@ -16,7 +16,7 @@ const updateProfile = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.updateProfile(
+  const response = await profileService.updateProfile(
     req.headers.authorization,
     req.body
   );
