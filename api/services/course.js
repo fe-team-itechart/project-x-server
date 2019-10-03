@@ -1,5 +1,6 @@
 const db = require('../../database');
 const errors = require('./errorHandlers/index');
+const Op = db.sequelize;
 
 const getCoursePreview = async id => {
   const course = await db.Courses.findByPk(id, {
@@ -16,6 +17,18 @@ const getCoursePreview = async id => {
   return course;
 };
 
+const getCoursesForCarousel = async id => {
+  const course = await db.Courses.findAll({
+    attributes: ['id', 'title', 'description', 'numberOfLessons'],
+    order: Op.random(),
+    limit: 10,
+  });
+  if (!course) throw new errors.NotFoundError('Courses not found');
+
+  return course;
+};
+
 module.exports = {
   getCoursePreview,
+  getCoursesForCarousel,
 };
