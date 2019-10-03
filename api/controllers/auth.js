@@ -1,4 +1,4 @@
-const services = require('../services/auth');
+const { authService } = require('../services');
 
 const BaseResponse = require('../services/response');
 
@@ -22,12 +22,12 @@ const login = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.login(req.body);
+  const response = await authService.login(req.body);
   res.send(response);
 };
 
 const socialLogin = async (req, res) => {
-  const { token } = await services.socialLogin(req.user);
+  const { token } = await authService.socialLogin(req.user);
   res.redirect(process.env.CLIENT_HOST + '?token=' + token);
 };
 
@@ -46,7 +46,7 @@ const registration = async (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const response = await services.registration(req.body);
+  const response = await authService.registration(req.body);
   res.status(201).send(response);
 };
 
@@ -54,7 +54,7 @@ const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     await emailSchema.validate(email);
-    const dataEmailing = await services.forgotPassword({ email });
+    const dataEmailing = await authService.forgotPassword({ email });
     const response = BaseResponse.responseBuilder({message: 'Mail sent', data: dataEmailing});
     res.status(200).send(response);
   } catch (e) {
@@ -71,7 +71,7 @@ const resetPassword = async (req, res) => {
       password,
       confirmPassword,
     });
-    const response = await services.resetPassword({ password, token });
+    const response = await authService.resetPassword({ password, token });
     res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
@@ -85,7 +85,7 @@ const changePassword = async (req, res) => {
     return res.status(400).json(error.message);
   }
 
-  const response = await services.changePassword(
+  const response = await authService.changePassword(
     req.headers.authorization,
     req.body.password
   );

@@ -12,7 +12,7 @@ const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 const login = async ({ email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
   if (!user) {
-    throw new errors.UserNotFoundError();
+    throw new errors.NotFoundError('User not found');
   }
 
   if (password && !hashHelpers.validPassword(password, user.password)) {
@@ -99,7 +99,7 @@ const forgotPassword = async ({ email }) => {
       );
       return dataEmailing;
     }
-    throw new errors.UserNotFoundError();
+    throw new errors.NotFoundError('User not found');
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
   }
@@ -135,7 +135,7 @@ const changePassword = async (authorization, password) => {
   const newPassword = await hashHelpers.createHash(password);
   const user = await db.Users.findByPk(id);
 
-  if (!user) throw new errors.UserNotFoundError();
+  if (!user) throw new errors.NotFoundError('User not found');
 
   await db.Users.update(
     { password: newPassword },

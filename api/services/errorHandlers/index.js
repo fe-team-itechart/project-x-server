@@ -1,5 +1,5 @@
 const WrongPasswordError = require('./wrongPasswordError');
-const UserNotFoundError = require('./userNotFoundError');
+const NotFoundError = require('./notFoundError');
 const UserAlreadyExistsError = require('./userAlreadyExistsError');
 const ResetPasswordError = require('./resetPasswordError');
 const RegistrationFailedError = require('./registrationFailedError');
@@ -8,7 +8,7 @@ const TokenNotValidError = require('./tokenNotValidError');
 
 module.exports = {
   WrongPasswordError,
-  UserNotFoundError,
+  NotFoundError,
   UserAlreadyExistsError,
   ResetPasswordError,
   RegistrationFailedError,

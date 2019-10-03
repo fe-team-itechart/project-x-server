@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-const controllers = require('../controllers/auth');
+const { authController } = require('../controllers');
 const { refreshToken } = require('../middlewares/index');
 const jwtGuard = require('../middlewares/jwtGuard');
 
@@ -45,7 +45,7 @@ const jwtGuard = require('../middlewares/jwtGuard');
  *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
  */
 
-router.post('/login', controllers.login);
+router.post('/login', authController.login);
 
 /**
  * @swagger
@@ -94,7 +94,7 @@ router.post('/login', controllers.login);
  *                  type: string
  *             example: {"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywiZW1haWwiOiJ1bml2ZXJzZXp4Y3ZAZ21haWwuY29tIiwiaWF0IjoxNTY4MDIzMjAyLCJleHAiOjE1NjgwMjMyMzh9._apV-RyrCHS0miAE0S9pt-06t6x3Xty-skuIWuLGp_k"}
  */
-router.post('/registration', controllers.registration);
+router.post('/registration', authController.registration);
 
 /**
  * @swagger
@@ -134,7 +134,7 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/', session: false }),
-  controllers.socialLogin
+  authController.socialLogin
 );
 
 /**
@@ -172,7 +172,7 @@ router.get('/auth/linkedin', passport.authenticate('linkedin'));
 router.get(
   '/auth/linkedin/callback',
   passport.authenticate('linkedin', { failureRedirect: '/', session: false }),
-  controllers.socialLogin
+  authController.socialLogin
 );
 
 /**
@@ -209,7 +209,7 @@ router.put(
   '/change-password',
   jwtGuard,
   refreshToken,
-  controllers.changePassword
+  authController.changePassword
 );
 
 /**
