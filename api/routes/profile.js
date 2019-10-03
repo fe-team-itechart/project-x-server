@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controllers = require('../controllers/profile');
+const { profileController } = require('../controllers');
 
 /**
  * @swagger
@@ -24,7 +24,7 @@ const controllers = require('../controllers/profile');
  *        '400':
  *         description: User not found.
  */
-router.get('/public', controllers.getProfile);
+router.get('/public', profileController.getProfile);
 
 /**
  * @swagger
@@ -106,6 +106,6 @@ router.get('/public', controllers.getProfile);
  *        '404':
  *         description: User not found.
  */
-router.put('/public', controllers.updateProfile);
+router.put('/public', profileController.updateProfile);
 
 module.exports = router;

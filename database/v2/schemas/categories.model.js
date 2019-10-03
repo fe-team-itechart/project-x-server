@@ -1,45 +1,36 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'PublicProfiles',
+    'Categories',
     {
       id: {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+        allowNull: false,
       },
-      twitterLink: {
-        type: type.TEXT,
-        allowNull: true,
-        defaultValue: ''
-      },
-      linkedInLink: {
-        type: type.TEXT,
-        allowNull: true,
-        defaultValue: ''
-      },
-      facebookLink: {
-        type: type.TEXT,
-        allowNull: true,
-        defaultValue: ''
+      title: {
+        type: type.STRING(128),
+        allowNull: false,
       },
       description: {
-        type: type.TEXT,
+        type: type.STRING(1000),
         allowNull: true,
-        defaultValue: ''
       },
       createdAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
       updatedAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
     },
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'public_profiles',
+      tableName: 'categories',
     }
   );
-
+  
   return MODEL;
 };

@@ -1,28 +1,26 @@
-module.exports = (sequelize, type) => {
-  const MODEL = sequelize.define(
-    'SettsProfiles',
+module.exports = (sequalize, type) => {
+  const MODEL = sequalize.define(
+    'UsersCourses',
     {
       id: {
         type: type.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-      },
-      localization: {
-        type: type.ENUM('ru', 'en'),
         allowNull: false,
-        defaultValue: 'ru'
       },
       createdAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
       updatedAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
     },
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'setts_profiles',
+      tableName: 'users_courses',
     }
   );
 

@@ -2,18 +2,18 @@ module.exports = (sequalize, type) => {
   const MODEL = sequalize.define(
     'Users',
     {
+      id: {
+        type: type.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+      },
       email: {
         type: type.STRING(64),
         allowNull: false,
       },
       password: {
         type: type.STRING(100),
-      },
-      id: {
-        type: type.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
       },
       firstName: {
         type: type.STRING(20),
@@ -30,9 +30,11 @@ module.exports = (sequalize, type) => {
       },
       createdAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
       updatedAt: {
         type: type.DATE,
+        defaultValue: Date.now()
       },
     },
     {
@@ -57,6 +59,7 @@ module.exports = (sequalize, type) => {
         model: models.UsersCourses,
         unique: true,
       },
+      foreignKey: 'userId',
     });
   };
 
