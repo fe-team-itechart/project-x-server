@@ -25,6 +25,11 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(express.json());
 
+app.use(express.static('./build'));
+app.get('/', (req, res) => {
+  res.sendFile('./build/index.html');
+});
+
 app.use('/api/users/', auth);
 app.use('/api/profile/', profile);
 app.use('/api/course/', course);
