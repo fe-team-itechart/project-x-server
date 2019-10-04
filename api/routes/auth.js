@@ -269,7 +269,7 @@ router.put(
  *                  type: string
  *         example: {"status": "400","name": "ResetPasswordError","message": "Bad Email"}
  * */
-router.post('/forgot-password', controllers.forgotPassword);
+router.post('/forgot-password', authController.forgotPassword);
 
 /**
  * 
@@ -344,7 +344,7 @@ router.post('/forgot-password', controllers.forgotPassword);
  *            "message": "User not Found"
  *          }
  */
-router.post('/reset-password', jwtGuard, controllers.resetPassword);
+router.post('/reset-password', jwtGuard, authController.resetPassword);
 
 
 module.exports = router;
