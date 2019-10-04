@@ -28,6 +28,10 @@ module.exports = (sequalize, type) => {
         allowNull: false,
         defaultValue: 'User'
       },
+      resetPasswordToken: {
+        type: type.STRING(255),
+        allowNull: true
+      },
       createdAt: {
         type: type.DATE,
         defaultValue: Date.now()

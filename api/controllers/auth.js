@@ -1,9 +1,13 @@
 const { authService } = require('../services');
 
+const BaseResponse = require('../services/response');
+
 const {
   loginValidate,
   registerValidate,
   passwordSchema,
+  emailSchema,
+  passwordConfirmSchema
 } = require('../validation/auth');
 
 const { isEmpty } = require('lodash');
@@ -46,60 +50,29 @@ const registration = async (req, res) => {
   res.status(201).send(response);
 };
 
-const reset = async (req, res) => {
+const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
-    const validation = await emailSchema.validate({ email });
-    const answer =
-      validation && (await authService.resetPasswordRequest({ email }));
-    const status = answer.status ? answer.status : 200;
-    const response = answer.messageId ? 'Mail was sent' : answer.message;
-    res.status(status).send(response);
-  } catch (e) {
-    throw new errors.ResetPasswordError(e.message);
-  }
-};
-
-const resetApprovementPassword = async (req, res) => {
-  try {
-    const { linkId } = req.params;
-
-    if (!linkId) {
-      throw new errors.ResetPasswordApproveError('Empty params');
-    }
-
-    const userId = await authService.resetPasswordApprove({
-      linkId: decodeURIComponent(linkId),
-    });
-
-    if (userId) {
-      res.status(200).send({
-        status: 200,
-        message: { content: 'Enter New Password', userId },
-      });
-    }
+    await emailSchema.validate(email);
+    const dataEmailing = await authService.forgotPassword({ email });
+    const response = BaseResponse.responseBuilder({message: 'Mail sent', data: dataEmailing});
+    res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
   }
 };
 
 const resetPassword = async (req, res) => {
-  const { linkId, password, passwordConfirm } = req.body;
-
-  if (!linkId || !password || !passwordConfirm) {
-    throw new errors.ResetPasswordError('Empty params');
-  }
+  const { password, confirmPassword } = req.body;
+  const token = req.headers.authorization;
 
   try {
-    const validation = await passwordsSchema.validate({
+    await passwordConfirmSchema.validate({
       password,
-      passwordConfirm,
+      confirmPassword,
     });
-
-    const answer =
-      validation && (await authService.resetPassword({ password, linkId }));
-
-    res.status(200).send(answer);
+    const response = await authService.resetPassword({ password, token });
+    res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
   }
@@ -123,8 +96,7 @@ module.exports = {
   login,
   socialLogin,
   registration,
-  reset,
-  resetApprovementPassword,
+  forgotPassword,
   resetPassword,
   socialLogin,
   changePassword,

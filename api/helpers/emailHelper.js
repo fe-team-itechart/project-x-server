@@ -1,25 +1,22 @@
-const nodemailer = require('nodemailer');
+const MailGun = require('mailgun-js');
 
 const sendEmail = async (address, text, link) => {
-  let testAccount = await nodemailer.createTestAccount();
-
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false,
-    auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
-    },
+  let mailGun = new MailGun({
+    apiKey: process.env.EMAIL_API_KEY,
+    domain: process.env.EMAIL_DOMAIN
   });
-
-  return transporter.sendMail({
-    from: '"Fred Foo 👻" <foo@example.com>',
-    to: address, 
-    subject: 'Hello ✔', 
-    text, 
+  
+  let mailOptions = {
+    from: `Project-x <${process.env.EMAIL_USERNAME}>`,
+    to: address,
+    subject: "Reset Password!",
+    text,
     html: '<a href="' + link + '">Link</a>', 
-  });
+  };
+
+  let answer = await mailGun.messages().send(mailOptions);
+
+  return answer;
 };
 module.exports = {
   sendEmail,
