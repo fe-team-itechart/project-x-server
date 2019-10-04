@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const cors = require('cors');
+const path = require('path')
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -25,9 +26,9 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(express.json());
 
-app.use(express.static('./build'));
-app.get('/', (req, res) => {
-  res.sendFile('./build/index.html');
+app.use(express.static(path.resolve(__dirname + '/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname + '/build/index.html'));
 });
 
 app.use('/api/users/', auth);

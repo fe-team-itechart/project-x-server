@@ -7,7 +7,7 @@ const {
   registerValidate,
   passwordSchema,
   emailSchema,
-  passwordConfirmSchema
+  passwordConfirmSchema,
 } = require('../validation/auth');
 
 const { isEmpty } = require('lodash');
@@ -55,7 +55,10 @@ const forgotPassword = async (req, res) => {
   try {
     await emailSchema.validate(email);
     const dataEmailing = await authService.forgotPassword({ email });
-    const response = BaseResponse.responseBuilder({message: 'Mail sent', data: dataEmailing});
+    const response = BaseResponse.responseBuilder({
+      message: 'Mail sent',
+      data: dataEmailing,
+    });
     res.status(200).send(response);
   } catch (e) {
     throw new errors.ResetPasswordError(e.message);
