@@ -17,7 +17,7 @@ const getCoursePreview = async id => {
   return course;
 };
 
-const getCoursesForCarousel = async id => {
+const getCoursesForCarousel = async () => {
   const course = await db.Courses.findAll({
     attributes: ['id', 'title', 'description', 'numberOfLessons'],
     order: Op.random(),
