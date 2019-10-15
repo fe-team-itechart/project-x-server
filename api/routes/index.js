@@ -5,5 +5,5 @@ const course = require('./course');
 module.exports = {
   auth,
   profile,
-  course
+  course,
 };

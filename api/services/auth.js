@@ -6,7 +6,6 @@ const errors = require('./errorHandlers/index');
 const db = require('../../database');
 const BaseResponse = require('./response');
 
-
 const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
@@ -37,7 +36,7 @@ const registration = async ({ firstName, lastName, email, password }) => {
     throw new errors.UserAlreadyExistsError();
   }
   const transaction = await db.sequelize.transaction();
-
+  
   try {
     if (password) {
       const hashedPassword = await hashHelpers.createHash(password);
@@ -63,14 +62,14 @@ const registration = async ({ firstName, lastName, email, password }) => {
       { id: createdUserId },
       { transaction }
     );
-
+   
     const newSettings = await db.SettsProfiles.create(
       { id: createdUserId },
       { transaction }
     );
 
     await transaction.commit();
-
+    
     return jwtHelpers.generateToken({ id: createdUserId, email });
   } catch (err) {
     await transaction.rollback();

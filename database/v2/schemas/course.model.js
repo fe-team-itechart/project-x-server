@@ -8,33 +8,37 @@ module.exports = (sequelize, type) => {
         primaryKey: true,
         allowNull: false,
       },
-      title: {
-        type: type.STRING(128),
+      courseName: {
+        type: type.STRING(64),
         allowNull: false,
       },
       description: {
         type: type.STRING(1000),
         allowNull: true,
       },
-      numberOfLessons: {
-        type: type.INTEGER,
-        allowNull: false,
-      },
       rating: {
         type: type.DOUBLE,
         allowNull: true,
       },
-      materials: {
-        type: type.STRING(512),
+      numberOfEnrolledStudents: {
+        type: type.INTEGER,
         allowNull: true,
+      },
+      authors: {
+        type: type.STRING(128),
+        allowNull: false,
+      },
+      language: {
+        type: type.STRING(32),
+        allowNull: false,
       },
       createdAt: {
         type: type.DATE,
-        defaultValue: Date.now()
+        defaultValue: Date.now(),
       },
       updatedAt: {
         type: type.DATE,
-        defaultValue: Date.now()
+        defaultValue: Date.now(),
       },
     },
     {
@@ -44,14 +48,8 @@ module.exports = (sequelize, type) => {
     }
   );
   MODEL.associate = models => {
-    MODEL.hasMany(models.CourseComments);
-    MODEL.belongsToMany(models.Categories, {
-      through: {
-        model: models.CourseCategories,
-        unique: true,
-      },
-      foreignKey: 'courseId',
-    });
+    MODEL.hasMany(models.CourseReviews);
+    MODEL.hasMany(models.Profits);
   };
   return MODEL;
 };

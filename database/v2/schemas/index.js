@@ -3,17 +3,15 @@ const PublicProfiles = require('./public-profile.model');
 const SettsProfiles = require('./setts-profile.model');
 const Courses = require('./course.model');
 const UsersCourses = require('./users-courses.model');
-const CourseCategories = require('./course-categories.model');
-const Categories = require('./categories.model');
-const CourseComments = require('./course-comments.model');
+const CourseReviews = require('./course-reviews.model');
+const Profits = require('./profits.model');
 
 module.exports = {
   Users,
   PublicProfiles,
   SettsProfiles,
   Courses,
-  Categories,
-  CourseCategories,
-  CourseComments,
+  CourseReviews,
   UsersCourses,
+  Profits
 };

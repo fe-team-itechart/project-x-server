@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'Categories',
+    'Profits',
     {
       id: {
         type: type.INTEGER,
@@ -8,29 +8,25 @@ module.exports = (sequelize, type) => {
         primaryKey: true,
         allowNull: false,
       },
-      title: {
-        type: type.STRING(128),
-        allowNull: false,
-      },
       description: {
-        type: type.STRING(1000),
+        type: type.STRING(128),
         allowNull: true,
       },
       createdAt: {
         type: type.DATE,
-        defaultValue: Date.now()
+        defaultValue: Date.now(),
       },
       updatedAt: {
         type: type.DATE,
-        defaultValue: Date.now()
+        defaultValue: Date.now(),
       },
     },
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'categories',
+      tableName: 'profits',
     }
   );
-  
+
   return MODEL;
 };
