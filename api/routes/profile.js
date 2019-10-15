@@ -48,9 +48,7 @@ router.get('/public', profileController.getProfile);
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
- *                 type: string
- *               lastName:
+ *               userName:
  *                 type: string
  *               description:
  *                 type: string
@@ -62,16 +60,14 @@ router.get('/public', profileController.getProfile);
  *                 type: string
  *           example:
  *            {
- *              "firstName":"Artsiom",
- *              "lastName":"Kashyn",
+ *              "userName":"Artsiom",
  *              "description":"lorem ipsum",
  *              "twitterLink":"https://twitter.com/",
  *              "linkedInLink":"https://www.linkedin.com/",
  *              "facebookLink":"https://www.facebook.com/"
  *             }
  *         required:
- *           - firstName
- *           - lastName
+ *           - userName
  *     responses:
  *        '200':
  *         description: Success
@@ -82,9 +78,7 @@ router.get('/public', profileController.getProfile);
  *             schema:
  *               type: object
  *               properties:
- *                 firstName:
- *                   type: string
- *                 lastName:
+ *                 userName:
  *                   type: string
  *                 description:
  *                   type: string
@@ -96,8 +90,7 @@ router.get('/public', profileController.getProfile);
  *                   type: string
  *             example:
  *               {
- *                 "firstName": "First name is not allowed to be empty",
- *                 "lastName": "Last name is not allowed to be empty",
+ *                 "userName": "User name is not allowed to be empty",
  *                 "description": "Description length must be less than or equal to 255 characters long",
  *                 "twitterLink": "Twitter link must be a valid uri",
  *                 "facebookLink": "Facebook link must be a valid uri",

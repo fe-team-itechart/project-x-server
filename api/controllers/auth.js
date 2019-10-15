@@ -32,15 +32,8 @@ const socialLogin = async (req, res) => {
 };
 
 const registration = async (req, res) => {
-  const { firstName, lastName, email, password, confirmPassword } = req.body;
-
-  const errors = registerValidate(
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword
-  );
+  const { userName, email, password, confirmPassword } = req.body;
+  const errors = registerValidate(userName, email, password, confirmPassword);
 
   if (!isEmpty(errors)) {
     return res.status(400).json(errors);

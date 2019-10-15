@@ -15,11 +15,7 @@ module.exports = (sequalize, type) => {
       password: {
         type: type.STRING(100),
       },
-      firstName: {
-        type: type.STRING(20),
-        allowNull: true,
-      },
-      lastName: {
+      userName: {
         type: type.STRING(20),
         allowNull: true,
       },
