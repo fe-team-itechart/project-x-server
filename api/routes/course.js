@@ -104,6 +104,6 @@ router.get('/preview/:courseId', courseController.getCoursePreview);
  *        '400':
  *         description: Courses not found.
  */
-router.get('/carousel-courses/', courseController.getCoursesForCarousel);
+router.get('/carousel/', courseController.getCoursesForCarousel);
 
 module.exports = router;
