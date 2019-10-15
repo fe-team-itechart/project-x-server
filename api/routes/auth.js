@@ -61,9 +61,7 @@ router.post('/login', authController.login);
  *           schema:
  *             type: object
  *             properties:
- *               firstName:
- *                 type: string
- *               lastName:
+ *               userName:
  *                 type: string
  *               password:
  *                 type: string
@@ -76,8 +74,7 @@ router.post('/login', authController.login);
  *                   "email":"universezxcv@gmail.com",
  *                   "password":"123123123",
  *                   "confirmPassword":"123123123",
- *                   "firstName":"Artem",
- *                   "lastName":"Kashin",
+ *                   "userName":"Artem",
  *                }
  *         required:
  *           - username

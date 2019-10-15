@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'PublicProfiles',
+    'publicProfiles',
     {
       id: {
         type: type.INTEGER,

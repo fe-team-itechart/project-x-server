@@ -21,17 +21,18 @@ const login = async ({ email, password }) => {
   return jwtHelpers.generateToken(user.dataValues);
 };
 
-const socialLogin = async ({ email, password, firstName, lastName }) => {
+const socialLogin = async ({ email, password, userName }) => {
   const user = await db.Users.findOne({ where: { email } });
   if (user) {
     return login({ email, password });
   } else {
-    return registration({ firstName, lastName, email, password });
+    return registration({ userName, email, password });
   }
 };
 
-const registration = async ({ firstName, lastName, email, password }) => {
+const registration = async ({ userName, email, password }) => {
   const user = await db.Users.findOne({ where: { email } });
+
   if (user) {
     throw new errors.UserAlreadyExistsError();
   }
@@ -43,16 +44,14 @@ const registration = async ({ firstName, lastName, email, password }) => {
       const newUser = {
         email,
         password: hashedPassword,
-        firstName,
-        lastName,
+        userName,
       };
       createdUser = await db.Users.create(newUser, { transaction });
     } else {
       const socialUser = {
         email,
         password: null,
-        firstName,
-        lastName,
+        userName,
       };
       createdUser = await db.Users.create(socialUser, { transaction });
     }

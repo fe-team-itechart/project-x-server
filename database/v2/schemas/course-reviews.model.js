@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'CourseReviews',
+    'courseReviews',
     {
       id: {
         type: type.INTEGER,
@@ -32,7 +32,7 @@ module.exports = (sequelize, type) => {
     }
   );
   MODEL.associate = models => {
-    MODEL.belongsTo(models.Users, {
+    MODEL.belongsTo(models.users, {
       foreignKey: 'userId',
     });
   };

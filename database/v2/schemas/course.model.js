@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'Courses',
+    'courses',
     {
       id: {
         type: type.INTEGER,
@@ -48,8 +48,8 @@ module.exports = (sequelize, type) => {
     }
   );
   MODEL.associate = models => {
-    MODEL.hasMany(models.CourseReviews);
-    MODEL.hasMany(models.Profits);
+    MODEL.hasMany(models.courseReviews);
+    MODEL.hasMany(models.profits);
   };
   return MODEL;
 };
