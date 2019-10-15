@@ -45,4 +45,65 @@ const { courseController } = require('../controllers');
  */
 router.get('/preview/:courseId', courseController.getCoursePreview);
 
+/**
+ * @swagger
+ * /api/course/carousel-courses/:
+ *    get:
+ *     name: Get Courses
+ *     summary: Get Course For Carousel
+ *     consumes:
+ *       - application/json
+ *     responses:
+ *        '200':
+ *         description: Success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                  course:
+ *                    title:
+ *                      type:string
+ *                    description:
+ *                      type:string
+ *                    numberOfLessons:
+ *                      type:integer
+ *             example:
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *               - title: React
+ *                 description: Some description
+ *                 numberOfLessons: 44
+ *        '400':
+ *         description: Courses not found.
+ */
+router.get('/carousel/', courseController.getCoursesForCarousel);
+
 module.exports = router;
