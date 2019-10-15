@@ -15,11 +15,7 @@ module.exports = (sequalize, type) => {
       password: {
         type: type.STRING(100),
       },
-      firstName: {
-        type: type.STRING(20),
-        allowNull: true,
-      },
-      lastName: {
+      userName: {
         type: type.STRING(20),
         allowNull: true,
       },
@@ -27,6 +23,10 @@ module.exports = (sequalize, type) => {
         type: type.ENUM('Admin', 'Mentor', 'User'),
         allowNull: false,
         defaultValue: 'User'
+      },
+      resetPasswordToken: {
+        type: type.STRING(255),
+        allowNull: true
       },
       createdAt: {
         type: type.DATE,

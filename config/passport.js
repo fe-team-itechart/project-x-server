@@ -4,14 +4,13 @@ const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 const strategyCallback = (accessToken, refreshToken, profile, done) => {
   const {
     id,
-    name: { givenName, familyName },
+    name: { givenName },
     emails,
   } = profile;
   const userData = {
     id: id,
     email: emails[0].value,
-    firstName: givenName,
-    lastName: familyName,
+    userName: givenName,
   };
   done(null, userData);
 };

@@ -1,14 +1,9 @@
 const Joi = require('@hapi/joi');
 
-const firstNameSchema = Joi.string()
+const userNameSchema = Joi.string()
   .min(2)
   .max(20)
   .required();
-
-const lastNameSchema = Joi.string()
-  .required()
-  .min(2)
-  .max(20);
 
 const emailSchema = Joi.string()
   .required()
@@ -17,14 +12,18 @@ const emailSchema = Joi.string()
 
 const passwordSchema = Joi.string()
   .required()
-  .regex(/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/)
+  .regex(
+    /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/
+  )
   .min(8)
   .max(32);
 
 const passwordConfirmSchema = Joi.object().keys({
   password: Joi.string()
     .required()
-    .regex(/(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/)
+    .regex(
+      /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/
+    )
     .min(8)
     .max(32),
   confirmPassword: Joi.any()
@@ -56,17 +55,10 @@ const loginValidate = (email, password) => {
   return errors;
 };
 
-const registerValidate = (
-  firstName,
-  lastName,
-  email,
-  password,
-  confirmPassword
-) => {
+const registerValidate = (userName, email, password, confirmPassword) => {
   let errors = {};
 
-  const firstNameValidate = Joi.validate(firstName, firstNameSchema);
-  const lastNameValidate = Joi.validate(lastName, lastNameSchema);
+  const userNameValidate = Joi.validate(userName, userNameSchema);
   const emailValidate = Joi.validate(email, emailSchema);
   const passwordValidate = Joi.validate(
     { password, confirmPassword },
@@ -87,17 +79,10 @@ const registerValidate = (
     );
   }
 
-  if (firstNameValidate.error) {
-    errors.firstName = firstNameValidate.error.details[0].message.replace(
+  if (userNameValidate.error) {
+    errors.userName = userNameValidate.error.details[0].message.replace(
       '"value"',
       'First name'
-    );
-  }
-
-  if (lastNameValidate.error) {
-    errors.lastName = lastNameValidate.error.details[0].message.replace(
-      '"value"',
-      'Last name'
     );
   }
 
@@ -107,8 +92,7 @@ const registerValidate = (
 module.exports = {
   loginValidate,
   registerValidate,
-  firstNameSchema,
-  lastNameSchema,
+  userNameSchema,
   emailSchema,
   passwordSchema,
   passwordConfirmSchema,
