@@ -17,16 +17,14 @@ const getProfile = async authorization => {
   }
 
   const {
-    firstName,
-    lastName,
+    userName,
     PublicProfile: {
       dataValues: { twitterLink, linkedInLink, facebookLink, description },
     },
   } = user;
 
   const profile = {
-    firstName,
-    lastName,
+    userName,
     twitterLink,
     linkedInLink,
     facebookLink,
@@ -43,8 +41,7 @@ const updateProfile = async (authorization, data) => {
   if (!user) throw new errors.UserNotFoundError();
 
   const {
-    firstName,
-    lastName,
+    userName,
     twitterLink,
     linkedInLink,
     facebookLink,
@@ -55,7 +52,7 @@ const updateProfile = async (authorization, data) => {
 
   try {
     await db.Users.update(
-      { firstName, lastName },
+      { userName },
       { returning: true, where: { id } },
       { transaction }
     );
@@ -82,8 +79,7 @@ const updateProfile = async (authorization, data) => {
     });
 
     const profile = {
-      firstName: user.firstName,
-      lastName: user.lastName,
+      userName: user.userName,
       twitterLink: user.PublicProfile.twitterLink,
       linkedInLink: user.PublicProfile.linkedInLink,
       facebookLink: user.PublicProfile.facebookLink,

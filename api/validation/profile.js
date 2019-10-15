@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 
-const { firstNameSchema, lastNameSchema } = require('../validation/auth');
+const { userNameSchema } = require('../validation/auth');
 
 const descriptionSchema = Joi.string().max(255);
 
@@ -9,16 +9,14 @@ const socialSchema = Joi.string().uri();
 const publicProfileValidate = profile => {
   let errors = {};
   const {
-    firstName,
-    lastName,
+    userName,
     description,
     twitterLink,
     facebookLink,
     linkedInLink,
   } = profile;
 
-  const firstNameValidate = Joi.validate(firstName, firstNameSchema);
-  const lastNameValidate = Joi.validate(lastName, lastNameSchema);
+  const userNameValidate = Joi.validate(userName, userNameSchema);
   const descriptionValidate = description
     ? Joi.validate(description, descriptionSchema)
     : '';
@@ -32,17 +30,10 @@ const publicProfileValidate = profile => {
     ? Joi.validate(linkedInLink, socialSchema)
     : '';
 
-  if (firstNameValidate.error) {
-    errors.firstName = firstNameValidate.error.details[0].message.replace(
+  if (userNameValidate.error) {
+    errors.userName = userNameValidate.error.details[0].message.replace(
       '"value"',
       'First name'
-    );
-  }
-
-  if (lastNameValidate.error) {
-    errors.lastName = lastNameValidate.error.details[0].message.replace(
-      '"value"',
-      'Last name'
     );
   }
 
