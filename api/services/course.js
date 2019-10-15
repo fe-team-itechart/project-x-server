@@ -1,5 +1,7 @@
 const db = require('../../database');
 const errors = require('./errorHandlers/index');
+const BaseResponse = require('./response');
+
 const Op = db.sequelize;
 
 const getCoursePreview = async id => {
@@ -25,7 +27,11 @@ const getCoursesForCarousel = async () => {
   });
   if (!course) throw new errors.NotFoundError('Courses not found');
 
-  return course;
+  return BaseResponse.responseBuilder({
+    status: 200,
+    message: 'Password updated',
+    data: course,
+  });
 };
 
 module.exports = {
