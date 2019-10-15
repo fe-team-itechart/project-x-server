@@ -6,13 +6,7 @@ const Op = db.sequelize;
 
 const getCoursePreview = async id => {
   const course = await db.Courses.findByPk(id, {
-    attributes: [
-      'title',
-      'description',
-      'numberOfLessons',
-      'rating',
-      'updatedAt',
-    ],
+    attributes: ['courseName', 'description', 'rating', 'updatedAt'],
   });
   if (!course) throw new errors.NotFoundError('Course not found');
 
@@ -21,7 +15,7 @@ const getCoursePreview = async id => {
 
 const getCoursesForCarousel = async () => {
   const course = await db.Courses.findAll({
-    attributes: ['id', 'title', 'description', 'numberOfLessons'],
+    attributes: ['id', 'courseName', 'description'],
     order: Op.random(),
     limit: 10,
   });
