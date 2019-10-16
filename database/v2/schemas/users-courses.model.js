@@ -1,6 +1,6 @@
 module.exports = (sequalize, type) => {
   const MODEL = sequalize.define(
-    'UsersCourses',
+    'usersCourses',
     {
       id: {
         type: type.INTEGER,

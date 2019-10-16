@@ -82,7 +82,7 @@ const registerValidate = (userName, email, password, confirmPassword) => {
   if (userNameValidate.error) {
     errors.userName = userNameValidate.error.details[0].message.replace(
       '"value"',
-      'First name'
+      'Username'
     );
   }
 

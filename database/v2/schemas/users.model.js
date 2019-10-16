@@ -1,6 +1,6 @@
 module.exports = (sequalize, type) => {
   const MODEL = sequalize.define(
-    'Users',
+    'users',
     {
       id: {
         type: type.INTEGER,
@@ -45,18 +45,18 @@ module.exports = (sequalize, type) => {
   );
 
   MODEL.associate = models => {
-    MODEL.hasOne(models.PublicProfiles, {
+    MODEL.hasOne(models.publicProfiles, {
       foreignKey: 'id',
     });
-    MODEL.hasOne(models.SettsProfiles, {
+    MODEL.hasOne(models.settsProfiles, {
       foreignKey: 'id',
     });
-    MODEL.hasMany(models.Courses, {
+    MODEL.hasMany(models.courses, {
       foreignKey: 'creatorId',
     });
-    MODEL.belongsToMany(models.Courses, {
+    MODEL.belongsToMany(models.courses, {
       through: {
-        model: models.UsersCourses,
+        model: models.usersCourses,
         unique: true,
       },
       foreignKey: 'userId',

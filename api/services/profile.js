@@ -4,10 +4,10 @@ const jwt = require('jsonwebtoken');
 
 const getProfile = async authorization => {
   const { id } = jwt.decode(authorization);
-  const user = await db.Users.findByPk(id, {
+  const user = await db.users.findByPk(id, {
     include: [
       {
-        model: db.PublicProfiles,
+        model: db.publicProfiles,
       },
     ],
   });
@@ -18,7 +18,7 @@ const getProfile = async authorization => {
 
   const {
     userName,
-    PublicProfile: {
+    publicProfile: {
       dataValues: { twitterLink, linkedInLink, facebookLink, description },
     },
   } = user;
@@ -36,7 +36,7 @@ const getProfile = async authorization => {
 
 const updateProfile = async (authorization, data) => {
   const { id } = jwt.decode(authorization);
-  const user = await db.Users.findByPk(id);
+  const user = await db.users.findByPk(id);
 
   if (!user) throw new errors.UserNotFoundError();
 
@@ -51,13 +51,13 @@ const updateProfile = async (authorization, data) => {
   const transaction = await db.sequelize.transaction();
 
   try {
-    await db.Users.update(
+    await db.users.update(
       { userName },
       { returning: true, where: { id } },
       { transaction }
     );
 
-    await db.PublicProfiles.update(
+    await db.publicProfiles.update(
       {
         twitterLink,
         linkedInLink,
@@ -70,20 +70,20 @@ const updateProfile = async (authorization, data) => {
 
     await transaction.commit();
 
-    const user = await db.Users.findByPk(id, {
+    const user = await db.users.findByPk(id, {
       include: [
         {
-          model: db.PublicProfiles,
+          model: db.publicProfiles,
         },
       ],
     });
 
     const profile = {
       userName: user.userName,
-      twitterLink: user.PublicProfile.twitterLink,
-      linkedInLink: user.PublicProfile.linkedInLink,
-      facebookLink: user.PublicProfile.facebookLink,
-      description: user.PublicProfile.description,
+      twitterLink: user.publicProfile.twitterLink,
+      linkedInLink: user.publicProfile.linkedInLink,
+      facebookLink: user.publicProfile.facebookLink,
+      description: user.publicProfile.description,
     };
 
     return profile;
