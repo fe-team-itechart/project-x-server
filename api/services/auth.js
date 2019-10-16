@@ -9,7 +9,7 @@ const BaseResponse = require('./response');
 const HOST = process.env.CLIENT_HOST || 'http://localhost:3000';
 
 const login = async ({ email, password }) => {
-  const user = await db.Users.findOne({ where: { email } });
+  const user = await db.users.findOne({ where: { email } });
   if (!user) {
     throw new errors.NotFoundError('User not found');
   }
@@ -22,7 +22,7 @@ const login = async ({ email, password }) => {
 };
 
 const socialLogin = async ({ email, password, userName }) => {
-  const user = await db.Users.findOne({ where: { email } });
+  const user = await db.users.findOne({ where: { email } });
   if (user) {
     return login({ email, password });
   } else {
@@ -31,7 +31,7 @@ const socialLogin = async ({ email, password, userName }) => {
 };
 
 const registration = async ({ userName, email, password }) => {
-  const user = await db.Users.findOne({ where: { email } });
+  const user = await db.users.findOne({ where: { email } });
 
   if (user) {
     throw new errors.UserAlreadyExistsError();
@@ -46,23 +46,23 @@ const registration = async ({ userName, email, password }) => {
         password: hashedPassword,
         userName,
       };
-      createdUser = await db.Users.create(newUser, { transaction });
+      createdUser = await db.users.create(newUser, { transaction });
     } else {
       const socialUser = {
         email,
         password: null,
         userName,
       };
-      createdUser = await db.Users.create(socialUser, { transaction });
+      createdUser = await db.users.create(socialUser, { transaction });
     }
     const createdUserId = createdUser.dataValues.id;
 
-    const newProfile = await db.PublicProfiles.create(
+    const newProfile = await db.publicProfiles.create(
       { id: createdUserId },
       { transaction }
     );
    
-    const newSettings = await db.SettsProfiles.create(
+    const newSettings = await db.settsProfiles.create(
       { id: createdUserId },
       { transaction }
     );
@@ -78,7 +78,7 @@ const registration = async ({ userName, email, password }) => {
 
 const forgotPassword = async ({ email }) => {
   try {
-    const user = await db.Users.findOne({ where: { email } });
+    const user = await db.users.findOne({ where: { email } });
     if (user) {
       const { id } = user;
       let { token } = await jwtHelpers.generateToken({ id, email });
@@ -87,7 +87,7 @@ const forgotPassword = async ({ email }) => {
         `Follow link ${HOST}/reset?id=${token}`,
         `${HOST}/reset?id=${token}`
       );
-      await db.Users.update(
+      await db.users.update(
         {
           resetPasswordToken: token,
         },
@@ -105,17 +105,20 @@ const forgotPassword = async ({ email }) => {
 
 const resetPassword = async ({ password, token }) => {
   try {
-    const User = await db.Users.findOne({
+    const User = await db.users.findOne({
       where: { resetPasswordToken: token },
     });
+
     if (!User) {
       throw new errors.UserNotFoundError();
     }
+
     const newPass = await hashHelpers.createHash(password);
     const user = User.update({
       password: newPass,
       resetPasswordToken: null,
     });
+    
     if (user) {
       return BaseResponse.responseBuilder({
         status: 200,
@@ -131,11 +134,11 @@ const resetPassword = async ({ password, token }) => {
 const changePassword = async (authorization, password) => {
   const { id } = jwt.decode(authorization);
   const newPassword = await hashHelpers.createHash(password);
-  const user = await db.Users.findByPk(id);
+  const user = await db.users.findByPk(id);
 
   if (!user) throw new errors.NotFoundError('User not found');
 
-  await db.Users.update(
+  await db.users.update(
     { password: newPassword },
     { returning: true, where: { id } }
   );

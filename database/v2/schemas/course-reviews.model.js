@@ -8,7 +8,7 @@ module.exports = (sequelize, type) => {
         primaryKey: true,
         allowNull: false,
       },
-      raiting: {
+      rating: {
         type: type.DOUBLE,
         allowNull: true,
       },
