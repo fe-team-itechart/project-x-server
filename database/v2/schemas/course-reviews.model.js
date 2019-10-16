@@ -11,6 +11,7 @@ module.exports = (sequelize, type) => {
       rating: {
         type: type.DOUBLE,
         allowNull: true,
+        defaultValue: 0
       },
       text: {
         type: type.STRING(1000),

@@ -27,16 +27,13 @@ app.use(bodyParser.json());
 app.use(express.json());
 
 app.use(express.static(path.resolve(__dirname + '/build')));
-app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname + '/build/index.html'));
-});
 
 app.use('/api/users/', auth);
 app.use('/api/profile/', profile);
 app.use('/api/course/', course);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.resolve(__dirname + '/build/index.html'));
 });
 
