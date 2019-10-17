@@ -3,6 +3,7 @@ const errors = require('./errorHandlers/index');
 const BaseResponse = require('./response');
 
 const Op = db.sequelize;
+const op = db.Sequelize.Op;
 
 const getCoursePreview = async id => {
   const course = await db.courses.findByPk(id, {
@@ -34,6 +35,28 @@ const getCoursePreview = async id => {
   return course;
 };
 
+const getCoursesByAttribute = async (search, limit) => {
+  const numberOfCourses = Number(limit) ? limit : 10;
+
+  const courses = await db.courses.findAll({
+    where: {
+      [op.or]: [
+        { courseName: { [op.iLike]: '%' + search + '%' } },
+        { description: { [op.iLike]: '%' + search + '%' } },
+        { authors: { [op.iLike]: '%' + search + '%' } },
+      ],
+    },
+    attributes: ['id', 'courseName', 'description', 'authors', 'rating'],
+    limit: numberOfCourses,
+  });
+
+  return BaseResponse.responseBuilder({
+    status: 200,
+    message: 'Success',
+    data: courses,
+  });
+};
+
 const getCoursesForCarousel = async () => {
   const course = await db.courses.findAll({
     attributes: ['id', 'courseName', 'description'],
@@ -51,5 +74,6 @@ const getCoursesForCarousel = async () => {
 
 module.exports = {
   getCoursePreview,
+  getCoursesByAttribute,
   getCoursesForCarousel,
 };
