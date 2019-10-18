@@ -59,7 +59,7 @@ const getCoursesByAttribute = async (search, limit) => {
 
 const getCoursesForCarousel = async () => {
   const course = await db.courses.findAll({
-    attributes: ['id', 'courseName', 'description'],
+    attributes: ['id', 'courseName', 'rating','authors'],
     order: Op.random(),
     limit: 10,
   });
