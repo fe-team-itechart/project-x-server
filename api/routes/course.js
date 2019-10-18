@@ -118,6 +118,8 @@ const { courseController } = require('../controllers');
  */
 router.get('/preview/:courseId', courseController.getCoursePreview);
 
+router.get('/', courseController.getCoursesByAttribute)
+
 /**
  * @swagger
  * /api/course/carousel-courses/:
