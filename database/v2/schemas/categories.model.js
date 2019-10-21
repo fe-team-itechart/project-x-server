@@ -1,6 +1,6 @@
 module.exports = (sequelize, type) => {
   const MODEL = sequelize.define(
-    'settsProfiles',
+    'categories',
     {
       id: {
         type: type.INTEGER,
@@ -8,10 +8,9 @@ module.exports = (sequelize, type) => {
         primaryKey: true,
         allowNull: false,
       },
-      localization: {
-        type: type.ENUM('ru', 'en'),
+      title: {
+        type: type.STRING(32),
         allowNull: false,
-        defaultValue: 'ru'
       },
       createdAt: {
         type: type.DATE,
@@ -25,9 +24,9 @@ module.exports = (sequelize, type) => {
     {
       timestamps: true,
       freezeTableName: true,
-      tableName: 'setts_profiles',
+      tableName: 'categories',
     }
   );
-
+  
   return MODEL;
 };

@@ -14,7 +14,7 @@ module.exports = (sequelize, type) => {
         defaultValue: 0
       },
       text: {
-        type: type.STRING(1000),
+        type: type.TEXT,
         allowNull: true,
       },
       createdAt: {
