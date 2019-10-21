@@ -5,6 +5,11 @@ const getCoursePreview = async (req, res) => {
   res.status(200).send(response);
 };
 
+// const getCourseReviews = async (req, res) => {
+//   const response = await services.getCourseReviews();
+//   res.status(200).send(response);
+// }
+
 const getCoursesByAttribute = async (req, res) => {
   const { search, limit } = req.query;
 
