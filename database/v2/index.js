@@ -1,4 +1,4 @@
-const models = require('./schemas');
+const models = require('./models');
 const Sequelize = require('sequelize');
 
 const db = {};
