@@ -7,11 +7,11 @@ async function getMockData() {
     const row = rows[index];
     data.push({
       courseId: row[0],
-      categoryId: row[1]
-    })
+      categoryId: row[1],
+    });
   }
   return data;
-};
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -21,5 +21,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete('courses_categories', null, {});
-  }
+  },
 };

@@ -10,11 +10,11 @@ async function getMockData() {
       rating: row[1],
       text: row[2],
       courseId: row[3],
-      userId: row[4]
-    })
+      userId: row[4],
+    });
   }
   return data;
-};
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -24,5 +24,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete('course_reviews', null, {});
-  }
+  },
 };

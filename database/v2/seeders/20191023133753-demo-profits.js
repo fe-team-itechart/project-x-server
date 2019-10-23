@@ -8,11 +8,11 @@ async function getMockData() {
     data.push({
       id: row[0],
       description: row[1],
-      courseId: row[2]
-    })
+      courseId: row[2],
+    });
   }
   return data;
-};
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -22,5 +22,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete('profits', null, {});
-  }
+  },
 };

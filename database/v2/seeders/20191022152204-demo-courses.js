@@ -13,12 +13,11 @@ async function getMockData() {
       numberOfEnrolledStudents: row[4],
       authors: row[5],
       language: row[6],
-      creatorId: row[7]
-    })
+      creatorId: row[7],
+    });
   }
   return data;
-};
-  
+}
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -28,5 +27,5 @@ module.exports = {
 
   down: (queryInterface, Sequelize) => {
     return queryInterface.bulkDelete('courses', null, {});
-  }
+  },
 };
