@@ -19,6 +19,10 @@ module.exports = (sequalize, type) => {
         type: type.STRING(20),
         allowNull: true,
       },
+      locale: {
+        type: type.STRING(4),
+        allowNull: true
+      },
       role: {
         type: type.ENUM('Admin', 'Mentor', 'User'),
         allowNull: false,
@@ -46,9 +50,6 @@ module.exports = (sequalize, type) => {
 
   MODEL.associate = models => {
     MODEL.hasOne(models.publicProfiles, {
-      foreignKey: 'id',
-    });
-    MODEL.hasOne(models.settsProfiles, {
       foreignKey: 'id',
     });
     MODEL.hasMany(models.courses, {

@@ -13,10 +13,14 @@ module.exports = (sequelize, type) => {
         allowNull: false,
       },
       description: {
-        type: type.STRING(1000),
+        type: type.TEXT,
         allowNull: true,
       },
       rating: {
+        type: type.DOUBLE,
+        allowNull: true,
+      },
+      price: {
         type: type.DOUBLE,
         allowNull: true,
       },
@@ -50,6 +54,13 @@ module.exports = (sequelize, type) => {
   MODEL.associate = models => {
     MODEL.hasMany(models.courseReviews);
     MODEL.hasMany(models.profits);
+    MODEL.belongsToMany(models.categories, {
+      through: {
+        model: models.coursesCategories,
+        unique: true,
+      },
+      foreignKey: 'courseId',
+    });
   };
   return MODEL;
 };
