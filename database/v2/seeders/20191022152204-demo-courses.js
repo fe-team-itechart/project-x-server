@@ -1,20 +1,19 @@
-'use strict';
 const readXlsxFile = require('read-excel-file/node');
 
 async function getMockData() {
-  let rows = await readXlsxFile('../v2/asserts/mock-courses.xlsx');
-  let data = [];
-  for (let i = 2; i < 17; i++) {
-    let el = rows[i];
+  const rows = await readXlsxFile('../v2/asserts/mock-courses.xlsx');
+  const data = [];
+  for (let index = 2; index < 17; index++) {
+    const row = rows[index];
     data.push({
-      id: el[0],
-      courseName: el[1],
-      description: el[2],
-      rating: el[3],
-      numberOfEnrolledStudents: el[4],
-      authors: el[5],
-      language: el[6],
-      creatorId: el[7]
+      id: row[0],
+      courseName: row[1].slice(0, 64),
+      description: row[2],
+      rating: row[3],
+      numberOfEnrolledStudents: row[4],
+      authors: row[5],
+      language: row[6],
+      creatorId: row[7]
     })
   }
   return data;
@@ -28,5 +27,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('courses', null, {});
   }
 };

@@ -1,17 +1,15 @@
-'use strict';
 const hashHelpers = require('../../../api/helpers/hashHelpers');
 
-async function createMockUser(i) {
+async function createMockUser(index) {
     const data = await hashHelpers.createHash("password");
     const obj = {
+      id: index + 1,
       userName: `John Doe`,
-      email: `demo${i}@demo.com`,
+      email: `demo${index}@demo.com`,
       password: data,
       role: 'User',
       locale: 'ru',
       resetPasswordToken: null,
-      createdAt: new Date(),
-      updatedAt: new Date()
     };
     return obj;
 }
@@ -19,8 +17,8 @@ async function createMockUser(i) {
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     
-    const dataTemp = await Promise.all(Array(10).fill(1).map((el, i) => {
-      return createMockUser(i).then(obj => obj);
+    const dataTemp = await Promise.all(Array(10).fill(1).map((el, index) => {
+      return createMockUser(index).then(user => user);
     }))
     
     return queryInterface.bulkInsert('users', dataTemp, {});
