@@ -38,16 +38,24 @@ const getCoursePreview = async id => {
 const getCoursesByAttribute = async (search, limit) => {
   const numberOfCourses = Number(limit) ? limit : 10;
 
-  const courses = await db.courses.findAll({
-    where: {
-      [op.or]: [
-        { courseName: { [op.iLike]: '%' + search + '%' } },
-        { description: { [op.iLike]: '%' + search + '%' } },
-        { authors: { [op.iLike]: '%' + search + '%' } },
-      ],
-    },
-    attributes: ['id', 'courseName', 'description', 'authors', 'rating'],
-    limit: numberOfCourses,
+  const query = `select courses.id as id, courses."courseName" as courseName, courses.description as description, courses.rating as rating, courses.authors as authors, array_agg(c.title) as categories
+  from courses
+      inner join courses_categories cc on courses.id = cc."courseId"
+      inner join categories c on cc."categoryId" = c.id
+  where
+  c.title ILIKE '%${search}%'
+  or
+  courses."courseName" ILIKE '%${search}%'
+  or
+  courses.description ILIKE '%${search}%'
+  or
+  courses.authors ILIKE '%${search}%'
+  
+  group by courses.id
+  limit '${numberOfCourses}'`;
+
+  const courses = await db.sequelize.query(query, {
+    type: db.sequelize.QueryTypes.SELECT,
   });
 
   return BaseResponse.responseBuilder({
@@ -59,7 +67,7 @@ const getCoursesByAttribute = async (search, limit) => {
 
 const getCoursesForCarousel = async () => {
   const course = await db.courses.findAll({
-    attributes: ['id', 'courseName', 'rating','authors'],
+    attributes: ['id', 'courseName', 'rating', 'authors'],
     order: Op.random(),
     limit: 10,
   });

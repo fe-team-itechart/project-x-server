@@ -62,13 +62,8 @@ const registration = async ({ userName, email, password }) => {
       { transaction }
     );
    
-    const newSettings = await db.settsProfiles.create(
-      { id: createdUserId },
-      { transaction }
-    );
-
     await transaction.commit();
-    
+
     return jwtHelpers.generateToken({ id: createdUserId, email });
   } catch (err) {
     await transaction.rollback();
