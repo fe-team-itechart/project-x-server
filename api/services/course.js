@@ -12,6 +12,7 @@ const getCoursePreview = async id => {
       'courseName',
       'description',
       'rating',
+      'price',
       'numberOfEnrolledStudents',
       'authors',
       'language',
@@ -21,7 +22,11 @@ const getCoursePreview = async id => {
     include: [
       {
         model: db.courseReviews,
-        attributes: ['id', 'rating', 'text', 'createdAt', 'updatedAt'],
+        attributes: ['id', 'rating', 'text', 'createdAt', 'updatedAt', 'userId'],
+        include: [{
+          model: db.users,
+          attributes: ['userName']
+        }]
       },
       {
         model: db.profits,
@@ -46,7 +51,7 @@ const getCoursesByAttribute = async (search, limit) => {
         { authors: { [op.iLike]: '%' + search + '%' } },
       ],
     },
-    attributes: ['id', 'courseName', 'description', 'authors', 'rating'],
+    attributes: ['id', 'courseName', 'description', 'authors', 'rating', 'price'],
     limit: numberOfCourses,
   });
 
@@ -59,10 +64,11 @@ const getCoursesByAttribute = async (search, limit) => {
 
 const getCoursesForCarousel = async () => {
   const course = await db.courses.findAll({
-    attributes: ['id', 'courseName', 'rating','authors'],
+    attributes: ['id', 'courseName', 'rating', 'authors', 'price'],
     order: Op.random(),
     limit: 10,
   });
+
   if (!course) throw new errors.NotFoundError('Courses not found');
 
   return BaseResponse.responseBuilder({

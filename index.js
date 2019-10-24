@@ -39,6 +39,11 @@ app.get('/', (req, res) => {
 
 app.use(errorHandlerMiddleware);
 
-app.listen(PORT, function() {
+const server = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
+});
+
+process.on('SIGINT', () => {
+  db.sequelize.connectionManager.close();
+  server.close();
 });

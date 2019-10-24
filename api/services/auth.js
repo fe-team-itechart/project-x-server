@@ -61,11 +61,6 @@ const registration = async ({ userName, email, password }) => {
       { id: createdUserId },
       { transaction }
     );
-   
-    const newSettings = await db.settsProfiles.create(
-      { id: createdUserId },
-      { transaction }
-    );
 
     await transaction.commit();
     
