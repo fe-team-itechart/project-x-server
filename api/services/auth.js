@@ -37,7 +37,7 @@ const registration = async ({ userName, email, password }) => {
     throw new errors.UserAlreadyExistsError();
   }
   const transaction = await db.sequelize.transaction();
-  
+
   try {
     if (password) {
       const hashedPassword = await hashHelpers.createHash(password);
@@ -61,14 +61,14 @@ const registration = async ({ userName, email, password }) => {
       { id: createdUserId },
       { transaction }
     );
-   
+
     const newSettings = await db.settsProfiles.create(
       { id: createdUserId },
       { transaction }
     );
 
     await transaction.commit();
-    
+
     return jwtHelpers.generateToken({ id: createdUserId, email });
   } catch (err) {
     await transaction.rollback();
@@ -118,7 +118,7 @@ const resetPassword = async ({ password, token }) => {
       password: newPass,
       resetPasswordToken: null,
     });
-    
+
     if (user) {
       return BaseResponse.responseBuilder({
         status: 200,
@@ -131,7 +131,7 @@ const resetPassword = async ({ password, token }) => {
   }
 };
 
-const changePassword = async (authorization, password) => {
+const changePassword = async (authorization, email, password) => {
   const { id } = jwt.decode(authorization);
   const newPassword = await hashHelpers.createHash(password);
   const user = await db.users.findByPk(id);
@@ -139,11 +139,11 @@ const changePassword = async (authorization, password) => {
   if (!user) throw new errors.NotFoundError('User not found');
 
   await db.users.update(
-    { password: newPassword },
+    { email, password: newPassword },
     { returning: true, where: { id } }
   );
 
-  return user;
+  return jwtHelpers.generateToken({ id, email });
 };
 
 module.exports = {

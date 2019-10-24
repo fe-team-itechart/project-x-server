@@ -75,14 +75,17 @@ const resetPassword = async (req, res) => {
 };
 
 const changePassword = async (req, res) => {
-  const { error } = passwordSchema.validate(req.body.password);
+  const { email, password } = req.body;
 
-  if (!isEmpty(error)) {
+  const errors = loginValidate(email, password);
+
+  if (!isEmpty(errors)) {
     return res.status(400).json(error.message);
   }
 
   const response = await authService.changePassword(
     req.headers.authorization,
+    req.body.email,
     req.body.password
   );
   res.status(200).send(response);
