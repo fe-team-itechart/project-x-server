@@ -37,7 +37,7 @@ const { courseController } = require('../controllers');
  *                     authors:
  *                       type: string
  *                     language:
- *                       type: string 
+ *                       type: string
  *                     createdAt:
  *                       type: string
  *                       format: date
@@ -51,7 +51,7 @@ const { courseController } = require('../controllers');
  *                         properties:
  *                           id:
  *                             type: integer
- *                           rating: 
+ *                           rating:
  *                             type: integer
  *                             format: double
  *                           text:
@@ -118,7 +118,8 @@ const { courseController } = require('../controllers');
  */
 router.get('/preview/:courseId', courseController.getCoursePreview);
 
-router.get('/', courseController.getCoursesByAttribute)
+
+router.get('/', courseController.getCoursesByAttribute);
 
 /**
  * @swagger
