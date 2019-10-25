@@ -8,17 +8,9 @@ module.exports = (sequalize, type) => {
         primaryKey: true,
         allowNull: false,
       },
-      createdAt: {
-        type: type.DATE,
-        defaultValue: Date.now()
-      },
-      updatedAt: {
-        type: type.DATE,
-        defaultValue: Date.now()
-      },
     },
     {
-      timestamps: true,
+      timestamps: false,
       freezeTableName: true,
       tableName: 'courses_categories',
     }

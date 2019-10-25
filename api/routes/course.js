@@ -120,7 +120,8 @@ const { refreshToken } = require('../middlewares/refreshAccessToken');
  */
 router.get('/preview/:courseId', courseController.getCoursePreview);
 
-router.get('/', jwtGuard, refreshToken, courseController.getCoursesByAttribute);
+
+router.get('/', courseController.getCoursesByAttribute);
 
 /**
  * @swagger
