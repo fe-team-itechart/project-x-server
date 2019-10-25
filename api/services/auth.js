@@ -61,9 +61,9 @@ const registration = async ({ userName, email, password }) => {
       { id: createdUserId },
       { transaction }
     );
-
+   
     await transaction.commit();
-    
+
     return jwtHelpers.generateToken({ id: createdUserId, email });
   } catch (err) {
     await transaction.rollback();

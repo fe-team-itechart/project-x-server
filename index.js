@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const swaggerUI = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+const db = require('./database');
 
 require('express-async-errors');
 
