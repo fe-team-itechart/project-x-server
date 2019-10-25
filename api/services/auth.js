@@ -57,11 +57,6 @@ const registration = async ({ userName, email, password }) => {
     }
     const createdUserId = createdUser.dataValues.id;
 
-    const newProfile = await db.publicProfiles.create(
-      { id: createdUserId },
-      { transaction }
-    );
-
     const newSettings = await db.settsProfiles.create(
       { id: createdUserId },
       { transaction }

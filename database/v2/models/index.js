@@ -5,7 +5,7 @@ const usersCourses = require('./users-courses.model');
 const courseReviews = require('./course-reviews.model');
 const profits = require('./profits.model');
 const categories = require('./categories.model');
-const courseCategories = require('./course-categories.model');
+const coursesCategories = require('./course-categories.model');
 
 module.exports = {
   users,
@@ -15,5 +15,5 @@ module.exports = {
   usersCourses,
   profits,
   categories,
-  courseCategories
+  coursesCategories
 };
