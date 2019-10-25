@@ -37,7 +37,7 @@ const registration = async ({ userName, email, password }) => {
     throw new errors.UserAlreadyExistsError();
   }
   const transaction = await db.sequelize.transaction();
-
+  let createdUser
   try {
     if (password) {
       const hashedPassword = await hashHelpers.createHash(password);
@@ -56,8 +56,8 @@ const registration = async ({ userName, email, password }) => {
       createdUser = await db.users.create(socialUser, { transaction });
     }
     const createdUserId = createdUser.dataValues.id;
-
-    const newSettings = await db.settsProfiles.create(
+    
+    await db.publicProfiles.create(
       { id: createdUserId },
       { transaction }
     );
