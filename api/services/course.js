@@ -1,3 +1,5 @@
+const jwtDecode = require('jwt-decode');
+
 const db = require('../../database');
 const errors = require('./errorHandlers/index');
 const BaseResponse = require('./response');
@@ -59,7 +61,7 @@ const getCoursesByAttribute = async (search, limit) => {
 
 const getCoursesForCarousel = async () => {
   const course = await db.courses.findAll({
-    attributes: ['id', 'courseName', 'rating','authors'],
+    attributes: ['id', 'courseName', 'rating', 'authors'],
     order: Op.random(),
     limit: 10,
   });
@@ -72,8 +74,62 @@ const getCoursesForCarousel = async () => {
   });
 };
 
+const postSignatureUserCourse = async (courseId, authorization) => {
+  if (
+    typeof parseInt(courseId) != 'number' ||
+    parseInt(courseId) !== parseInt(courseId)
+  ) {
+    throw new errors.SignatureUserCourseError('Invalid parament courseId');
+  }
+
+  const { id: userId } = jwtDecode(authorization);
+  const [signature, created] = await db.usersCourses.findOrCreate({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+
+  if (!created)
+    throw new errors.SignatureUserCourseError('User is signatured already');
+
+  return BaseResponse.responseBuilder({
+    status: 200,
+    message: 'User is signatured',
+    data: signature,
+  });
+};
+
+const getSignatureUserCourse = async (courseId, authorization) => {
+  if (
+    typeof parseInt(courseId) != 'number' ||
+    parseInt(courseId) !== parseInt(courseId)
+  ) {
+    throw new errors.SignatureUserCourseError('Invalid parament courseId');
+  }
+
+  const { id: userId } = jwtDecode(authorization);
+
+  const signature = await db.usersCourses.findOne({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+
+  const response = {
+    status: 200,
+    message: (!signature) ? 'User is not signatured' : 'User have been signatured already',
+    data: signature,
+  };
+  
+  return BaseResponse.responseBuilder(response);
+}
+
 module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
+  postSignatureUserCourse,
+  getSignatureUserCourse
 };

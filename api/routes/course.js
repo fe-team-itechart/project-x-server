@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const { courseController } = require('../controllers');
+const jwtGuard = require('../middlewares/jwtGuard');
+const { refreshToken } = require('../middlewares/refreshAccessToken');
 
 /**
  * @swagger
@@ -37,7 +39,7 @@ const { courseController } = require('../controllers');
  *                     authors:
  *                       type: string
  *                     language:
- *                       type: string 
+ *                       type: string
  *                     createdAt:
  *                       type: string
  *                       format: date
@@ -51,7 +53,7 @@ const { courseController } = require('../controllers');
  *                         properties:
  *                           id:
  *                             type: integer
- *                           rating: 
+ *                           rating:
  *                             type: integer
  *                             format: double
  *                           text:
@@ -118,7 +120,7 @@ const { courseController } = require('../controllers');
  */
 router.get('/preview/:courseId', courseController.getCoursePreview);
 
-router.get('/', courseController.getCoursesByAttribute)
+router.get('/', jwtGuard, refreshToken, courseController.getCoursesByAttribute);
 
 /**
  * @swagger
@@ -180,5 +182,19 @@ router.get('/', courseController.getCoursesByAttribute)
  *         description: Courses not found.
  */
 router.get('/carousel/', courseController.getCoursesForCarousel);
+
+router.post(
+  '/subscribe/:courseId',
+  jwtGuard,
+  refreshToken,
+  courseController.postSignatureUserCourse
+);
+
+router.get(
+  '/subscribe/check/:courseId',
+  jwtGuard,
+  refreshToken,
+  courseController.getSignatureUserCourse
+);
 
 module.exports = router;
