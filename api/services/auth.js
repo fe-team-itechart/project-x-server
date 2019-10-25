@@ -56,8 +56,8 @@ const registration = async ({ userName, email, password }) => {
       createdUser = await db.users.create(socialUser, { transaction });
     }
     const createdUserId = createdUser.dataValues.id;
-
-    const newSettings = await db.settsProfiles.create(
+    
+    await db.publicProfiles.create(
       { id: createdUserId },
       { transaction }
     );
