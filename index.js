@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const swaggerUI = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+const db = require('./database');
 
 require('express-async-errors');
 
@@ -39,6 +40,11 @@ app.get('/', (req, res) => {
 
 app.use(errorHandlerMiddleware);
 
-app.listen(PORT, function() {
+const server = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
+});
+
+process.on('SIGINT', () => {
+  db.sequelize.connectionManager.close();
+  server.close();
 });
