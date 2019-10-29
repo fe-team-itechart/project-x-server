@@ -5,7 +5,7 @@ const ResetPasswordError = require('./resetPasswordError');
 const RegistrationFailedError = require('./registrationFailedError');
 const UnauthorizedError = require('./unauthorizedError');
 const TokenNotValidError = require('./tokenNotValidError');
-const SignatureUserCourseError = require('./SignatureUserCourseError');
+const SubscribeUserToCourseError = require('./SubscribeUserToCourseError');
 
 module.exports = {
   WrongPasswordError,
@@ -15,5 +15,5 @@ module.exports = {
   RegistrationFailedError,
   UnauthorizedError,
   TokenNotValidError,
-  SignatureUserCourseError
+  SubscribeUserToCourseError
 };

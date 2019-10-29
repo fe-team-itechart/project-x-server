@@ -88,16 +88,15 @@ const getCoursesForCarousel = async () => {
   });
 };
 
-const postSignatureUserCourse = async (courseId, authorization) => {
-  if (
-    typeof parseInt(courseId) != 'number' ||
-    parseInt(courseId) !== parseInt(courseId)
-  ) {
-    throw new errors.SignatureUserCourseError('Invalid parament courseId');
-  }
+const subscribeUserToCourse = async (courseId, authorization) => {
+  const course = await db.courses.findByPk(courseId);
 
+  if (!course) {
+    throw new errors.SubscribeUserToCourseError('Such course isn\'t exist', 404);
+  }
+  
   const { id: userId } = jwtDecode(authorization);
-  const [signature, created] = await db.usersCourses.findOrCreate({
+  const [subscribe, created] = await db.usersCourses.findOrCreate({
     where: {
       userId,
       courseId,
@@ -105,26 +104,25 @@ const postSignatureUserCourse = async (courseId, authorization) => {
   });
 
   if (!created)
-    throw new errors.SignatureUserCourseError('User is signatured already');
+    throw new errors.SubscribeUserToCourseError('User has already signed');
 
   return BaseResponse.responseBuilder({
-    status: 200,
-    message: 'User is signatured',
-    data: signature,
+    status: 201,
+    message: 'User have signatured',
+    data: subscribe,
   });
 };
 
-const getSignatureUserCourse = async (courseId, authorization) => {
-  if (
-    typeof parseInt(courseId) != 'number' ||
-    parseInt(courseId) !== parseInt(courseId)
-  ) {
-    throw new errors.SignatureUserCourseError('Invalid parament courseId');
+const getSubscriptionUserToCourse = async (courseId, authorization) => {
+  const course = await db.courses.findByPk(courseId);
+
+  if (!course) {
+    throw new errors.SubscribeUserToCourseError('Such course isn\'t exist', 404);
   }
 
   const { id: userId } = jwtDecode(authorization);
 
-  const signature = await db.usersCourses.findOne({
+  const subscribe = await db.usersCourses.findOne({
     where: {
       userId,
       courseId,
@@ -133,8 +131,8 @@ const getSignatureUserCourse = async (courseId, authorization) => {
 
   const response = {
     status: 200,
-    message: (!signature) ? 'User is not signatured' : 'User have been signatured already',
-    data: signature,
+    message: (!subscribe) ? 'User haven\'t subscribed' : ' User has already signed',
+    data: subscribe,
   };
   
   return BaseResponse.responseBuilder(response);
@@ -144,6 +142,6 @@ module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
-  postSignatureUserCourse,
-  getSignatureUserCourse
+  subscribeUserToCourse,
+  getSubscriptionUserToCourse
 };
