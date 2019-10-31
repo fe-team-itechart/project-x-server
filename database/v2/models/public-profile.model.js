@@ -23,6 +23,11 @@ module.exports = (sequelize, type) => {
         allowNull: true,
         defaultValue: ''
       },
+      profileImage: {
+        type: type.TEXT,
+        allowNull: true,
+        defaultValue: ''
+      },
       description: {
         type: type.TEXT,
         allowNull: true,
