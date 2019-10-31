@@ -4,9 +4,9 @@ async function createMockUser(index) {
   const data = await hashHelpers.createHash('Password123456789!');
   const obj = {
     id: index + 1,
-    userName: `John Doe`,
     email: `demo${index}@demo.com`,
     password: data,
+    userName: `John Doe`,
     role: 'User',
     locale: 'ru',
     resetPasswordToken: null,

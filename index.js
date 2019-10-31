@@ -11,7 +11,7 @@ const db = require('./database');
 
 require('express-async-errors');
 
-const { auth, profile, course } = require('./api/routes');
+const { auth, profile, course, categories } = require('./api/routes');
 const { errorHandlerMiddleware } = require('./api/middlewares');
 
 const app = express();
@@ -32,6 +32,7 @@ app.use(express.static(path.resolve(__dirname + '/build')));
 app.use('/api/users/', auth);
 app.use('/api/profile/', profile);
 app.use('/api/course/', course);
+app.use('/api/categories/', categories);
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.get('/', (req, res) => {

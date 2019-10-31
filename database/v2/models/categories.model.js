@@ -12,6 +12,11 @@ module.exports = (sequelize, type) => {
         type: type.STRING(32),
         allowNull: false,
       },
+      parent_id: {
+        type: type.INTEGER,
+        allowNull: false,
+        defaultValue: -1
+      },
       createdAt: {
         type: type.DATE,
         defaultValue: Date.now()
