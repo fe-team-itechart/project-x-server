@@ -182,4 +182,7 @@ router.get('/', courseController.getCoursesByAttribute);
  */
 router.get('/carousel/', courseController.getCoursesForCarousel);
 
+
+router.get('/by-categories/', courseController.getCoursesByCategories);
+
 module.exports = router;

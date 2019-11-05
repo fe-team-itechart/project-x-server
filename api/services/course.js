@@ -22,11 +22,20 @@ const getCoursePreview = async id => {
     include: [
       {
         model: db.courseReviews,
-        attributes: ['id', 'rating', 'text', 'createdAt', 'updatedAt', 'userId'],
-        include: [{
-          model: db.users,
-          attributes: ['userName']
-        }]
+        attributes: [
+          'id',
+          'rating',
+          'text',
+          'createdAt',
+          'updatedAt',
+          'userId',
+        ],
+        include: [
+          {
+            model: db.users,
+            attributes: ['userName'],
+          },
+        ],
       },
       {
         model: db.profits,
@@ -86,8 +95,51 @@ const getCoursesForCarousel = async () => {
   });
 };
 
+const getCoursesByCategories = async categoriesList => {
+  const preparedCategoriesList = String(categoriesList)
+    .split(',')
+    .map(el => {
+      return `'${el}'`;
+    })
+    .join(',');
+
+  const query = `SELECT 
+    courses.id,
+    courses."courseName",
+    courses.description, 
+    courses.rating,
+    courses.price,
+    courses."numberOfEnrolledStudents",
+    courses.authors,
+    courses.language,
+    courses."createdAt",
+    courses."updatedAt",
+    courses."creatorId"
+  FROM public.courses, (SELECT courses_categories."courseId" FROM  
+    public.courses_categories, 
+    (SELECT id 
+    FROM public.categories 
+    WHERE categories.title in (${preparedCategoriesList})) 
+    as selected_categories 
+    WHERE selected_categories.id = courses_categories."categoryId" 
+    GROUP BY courses_categories."courseId" 
+    ORDER BY courses_categories."courseId" ASC) as selected_courses 
+  WHERE selected_courses."courseId" = courses.id`;
+
+  const courses = await db.sequelize.query(query, {
+    type: db.sequelize.QueryTypes.SELECT,
+  });
+
+  return BaseResponse.responseBuilder({
+    status: 200,
+    message: 'Success',
+    data: courses,
+  });
+};
+
 module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
+  getCoursesByCategories,
 };

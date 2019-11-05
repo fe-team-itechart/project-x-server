@@ -18,8 +18,15 @@ const getCoursesForCarousel = async (req, res) => {
   res.status(200).send(response);
 };
 
+
+const getCoursesByCategories = async (req, res) => {
+  const { categories } = req.query;
+  const response = await services.getCoursesByCategories(categories);
+  res.status(200).send(response);
+}
 module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
+  getCoursesByCategories
 };

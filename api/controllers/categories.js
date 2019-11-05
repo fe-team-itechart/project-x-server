@@ -2,7 +2,7 @@ const { categoriesService } = require('../services');
 
 const getAllCategories = async (req, res) => {
   const data = await categoriesService.getAllCategories();
-  res.json(data);
+  res.status(200).json(data);
 };
 
 module.exports = {
