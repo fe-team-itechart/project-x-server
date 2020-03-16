@@ -18,8 +18,24 @@ const getCoursesForCarousel = async (req, res) => {
   res.status(200).send(response);
 };
 
+const subscribeUserToCourse = async (req, res) => {
+  const { courseId } = req.params;
+  const { authorization } = req.headers;
+  const response = await services.subscribeUserToCourse(courseId, authorization);
+  res.status(200).send(response);
+};
+
+const getSubscriptionUserToCourse = async (req, res) => {
+  const { courseId } = req.params;
+  const { authorization } = req.headers;
+  const response = await services.getSubscriptionUserToCourse(courseId, authorization);
+  res.status(200).send(response);
+};
+
 module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
+  subscribeUserToCourse,
+  getSubscriptionUserToCourse
 };

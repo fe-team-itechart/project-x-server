@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const { courseController } = require('../controllers');
+const jwtGuard = require('../middlewares/jwtGuard');
+const { refreshToken } = require('../middlewares/refreshAccessToken');
 
 /**
  * @swagger
@@ -129,6 +131,7 @@ router.get('/', courseController.getCoursesByAttribute);
  *     summary: Get Course For Carousel
  *     consumes:
  *       - application/json
+ *    
  *     responses:
  *        '200':
  *         description: Success
@@ -181,5 +184,174 @@ router.get('/', courseController.getCoursesByAttribute);
  *         description: Courses not found.
  */
 router.get('/carousel/', courseController.getCoursesForCarousel);
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     Bearer:
+ *       type: apiKey
+ *       name: Authorization
+ *       in: header
+ * definitions:
+ *      Subscription: 
+ *        type: object
+ *        properties:
+ *          createdAt:
+ *            type: string 
+ *            format: dateTime
+ *          updatedAt: 
+ *            type: string
+ *            format: dateTime
+ *          id:
+ *            type: integer
+ *            format: int64
+ *          userId:
+ *            type: integer
+ *            format: int64
+ *          courseId:
+ *            type: integer
+ *            format: int64
+ * /api/course/subscribe/{courseId}:
+ *    post:
+ *     security:
+ *       - Bearer: []
+ *     name: Subscribe Course
+ *     summary: Create subscription for Course by User
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         description: course id in DB
+ *         required: true
+ *         type: integer
+ *         format: int32
+ *     responses:
+ *        '200':
+ *         description: Basic Answer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties: 
+ *                status:
+ *                  type: integer
+ *                  format: int64
+ *                statusMessage:
+ *                  type: string
+ *                message:
+ *                  type: string
+ *                data:
+ *                  $ref: '#/definitions/Subscription'
+ *             example: {
+ *                "status": 201,
+ *                "statusMessage": "Created",
+ *                "message": "User has signatured",
+ *                "data": {
+ *                 "createdAt": "2019-10-29T08:56:53.253Z",
+ *                 "updatedAt": "2019-10-29T08:56:53.253Z",
+ *                 "id": 14,
+ *                 "userId": 2,
+ *                 "courseId": 6
+ *                }
+ *              }
+ *        '400':
+ *          description: User has already signed
+ *        '404':
+ *         description: Courses not found.
+ */
+router.post(
+  '/subscribe/:courseId',
+  jwtGuard,
+  refreshToken,
+  courseController.subscribeUserToCourse
+);
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     Bearer:
+ *       type: apiKey
+ *       name: Authorization
+ *       in: header
+ * definitions:
+ *      Subscription: 
+ *        type: object
+ *        properties:
+ *          createdAt:
+ *            type: string 
+ *            format: dateTime
+ *          updatedAt: 
+ *            type: string
+ *            format: dateTime
+ *          id:
+ *            type: integer
+ *            format: int64
+ *          userId:
+ *            type: integer
+ *            format: int64
+ *          courseId:
+ *            type: integer
+ *            format: int64
+ * /api/course/subscribe/check/{courseId}:
+ *    get:
+ *     security:
+ *       - Bearer: []
+ *     name: Check Subscribe Course
+ *     summary: Check subscription for Course by User
+ *     consumes:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: courseId
+ *         description: course id in DB
+ *         required: true
+ *         type: integer
+ *         format: int32
+ *     responses:
+ *        '200':
+ *         description: Basic Answer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties: 
+ *                status:
+ *                  type: integer
+ *                  format: int64
+ *                statusMessage:
+ *                  type: string
+ *                message:
+ *                  type: string
+ *                data:
+ *                  $ref: '#/definitions/Subscription'
+ *             example: {
+ *                "status": 200,
+ *                "statusMessage": "Ok",
+ *                "message": "User has already signed",
+ *                "data": {
+ *                 "createdAt": "2019-10-29T08:56:53.253Z",
+ *                 "updatedAt": "2019-10-29T08:56:53.253Z",
+ *                 "id": 14,
+ *                 "userId": 2,
+ *                 "courseId": 6
+ *                }
+ *              }
+ *        '400':
+ *          description: User has already signed
+ *        '404':
+ *         description: Courses not found.
+ */
+
+
+router.get(
+  '/subscribe/check/:courseId',
+  jwtGuard,
+  refreshToken,
+  courseController.getSubscriptionUserToCourse
+);
 
 module.exports = router;

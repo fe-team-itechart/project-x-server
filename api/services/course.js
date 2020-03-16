@@ -1,3 +1,5 @@
+const jwtDecode = require('jwt-decode');
+
 const db = require('../../database');
 const errors = require('./errorHandlers/index');
 const BaseResponse = require('./response');
@@ -86,8 +88,60 @@ const getCoursesForCarousel = async () => {
   });
 };
 
+const subscribeUserToCourse = async (courseId, authorization) => {
+  const course = await db.courses.findByPk(courseId);
+
+  if (!course) {
+    throw new errors.SubscribeUserToCourseError('Such course isn\'t exist', 404);
+  }
+  
+  const { id: userId } = jwtDecode(authorization);
+  const [subscribe, created] = await db.usersCourses.findOrCreate({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+
+  if (!created)
+    throw new errors.SubscribeUserToCourseError('User has already signed');
+
+  return BaseResponse.responseBuilder({
+    status: 201,
+    message: 'User have signatured',
+    data: subscribe,
+  });
+};
+
+const getSubscriptionUserToCourse = async (courseId, authorization) => {
+  const course = await db.courses.findByPk(courseId);
+
+  if (!course) {
+    throw new errors.SubscribeUserToCourseError('Such course isn\'t exist', 404);
+  }
+
+  const { id: userId } = jwtDecode(authorization);
+
+  const subscribe = await db.usersCourses.findOne({
+    where: {
+      userId,
+      courseId,
+    },
+  });
+
+  const response = {
+    status: 200,
+    message: (!subscribe) ? 'User haven\'t subscribed' : ' User has already signed',
+    data: subscribe,
+  };
+  
+  return BaseResponse.responseBuilder(response);
+}
+
 module.exports = {
   getCoursePreview,
   getCoursesByAttribute,
   getCoursesForCarousel,
+  subscribeUserToCourse,
+  getSubscriptionUserToCourse
 };
